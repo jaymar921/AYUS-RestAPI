@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AYUS-RestAPI", "AYUS-RestAPI\AYUS-RestAPI.csproj", "{1AEA046D-AC1A-425F-B579-FE03F302B514}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AYUS-RestAPI.ASP", "AYUS-RestAPI.ASP\AYUS-RestAPI.ASP.csproj", "{DA30D6A9-81D0-4837-889E-DA47ED73E21C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1AEA046D-AC1A-425F-B579-FE03F302B514} = {1AEA046D-AC1A-425F-B579-FE03F302B514}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1AEA046D-AC1A-425F-B579-FE03F302B514}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AEA046D-AC1A-425F-B579-FE03F302B514}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AEA046D-AC1A-425F-B579-FE03F302B514}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AEA046D-AC1A-425F-B579-FE03F302B514}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA30D6A9-81D0-4837-889E-DA47ED73E21C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA30D6A9-81D0-4837-889E-DA47ED73E21C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA30D6A9-81D0-4837-889E-DA47ED73E21C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA30D6A9-81D0-4837-889E-DA47ED73E21C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F6AAB532-9958-45FE-8572-A2021F86D032}
+	EndGlobalSection
+EndGlobal

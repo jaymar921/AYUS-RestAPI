@@ -1,0 +1,113 @@
+﻿// Setting up CLIENT
+
+// create the personal info
+PersonalInformation personal = new PersonalInformation
+{
+    Firstname = "Jayharron Mar",
+    Lastname = "Abejar",
+    Contact = "09123456789",
+    Birthdate = new DateTime(2000, 09, 21),
+    Address = "Talisay City, Cebu",
+    LicenseNumber = "G-1232321",
+    Expiry = new DateTime(2023,09,21)
+};
+
+Wallet wallet = new Wallet
+{
+    Balance = 0,
+    UUID = personal.UUID,
+    Pincode = string.Empty,
+};
+
+Credential credential = new Credential
+{
+    UUID = personal.UUID,
+    Password = "123sdf932hjth9234",
+    Username = "JayMar921",
+    Email = "jayharron@email.com"
+};
+
+AccountStatus accountStatus = new AccountStatus
+{
+    UUID = personal.UUID,
+    Role = "CLIENT"
+}; 
+
+User user = new User(personal, credential, wallet, accountStatus, new List<Vehicle>());
+//dataRepository.AddUser(user);
+
+
+
+// Setting up the Mechanic
+// create the personal info
+PersonalInformation personal = new PersonalInformation
+{
+    Firstname = "Harold",
+    Lastname = "Cuico",
+    Contact = "09123456789",
+    Birthdate = new DateTime(2000, 09, 21),
+    Address = "Cebu City, 6000",
+    LicenseNumber = "G-3232323",
+    Expiry = new DateTime(2023,09,21)
+};
+
+Wallet wallet = new Wallet
+{
+    Balance = 0,
+    UUID = personal.UUID,
+    Pincode = string.Empty,
+};
+
+Credential credential = new Credential
+{
+    UUID = personal.UUID,
+    Password = "123sdf932hjth9234",
+    Username = "HCuicoGwapo",
+    Email = "hcuico@email.com"
+};
+
+AccountStatus accountStatus = new AccountStatus
+{
+    UUID = personal.UUID,
+    Role = "MECHANIC",
+    ShopID = personal.UUID
+};
+
+Shop shop = new Shop
+{
+    ShopID = personal.UUID,
+    ShopDescription = "Harold Mechanic Shop, 24/7 Open",
+    ShopName = "Harold Gwapong Mekaniko"
+};
+
+Service service = new Service()
+{
+    ServiceDescription = "Changing the battery of the vehicle",
+    ServiceName = "Battery Change",
+    ServiceID = "1124"
+};
+
+ServiceOffer offer = new ServiceOffer
+{
+    ShopID = personal.UUID,
+    ServiceExpertise = "Master",
+    ServiceID = "1124",
+    Price = 450
+};
+
+offer.setService(service);
+
+shop.ServiceOffers.Add(offer);
+
+Billing billing = new Billing
+{
+    BillingID = Guid.NewGuid().ToString(),
+    ShopID = personal.UUID,
+    ServiceFee = 500,
+    ServiceRemark = "Good"
+};
+
+shop.Billings.Add(billing);
+accountStatus.setShop(shop);
+
+User user = new User(personal, credential, wallet, accountStatus, new List<Vehicle>());
