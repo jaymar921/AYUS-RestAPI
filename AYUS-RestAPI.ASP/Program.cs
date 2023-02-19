@@ -1,8 +1,17 @@
 using AYUS_RestAPI.ASP.Models;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+const string corsPolicyName = "ApiCORS";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(corsPolicyName, policy =>
+    {
+        policy.WithOrigins("*");
+    });
+});
 
 // Add services to the container.
 
@@ -24,7 +33,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors(x => x
+           .AllowAnyMethod()
+           .AllowAnyHeader()
+           .SetIsOriginAllowed(origin => true) // allow any origin
+           .AllowCredentials()); // allow credentials
 app.UseAuthorization();
 
 app.MapControllers();

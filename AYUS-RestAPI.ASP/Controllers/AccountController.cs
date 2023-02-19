@@ -2,6 +2,7 @@
 using AYUS_RestAPI.ASP.Models.Request;
 using AYUS_RestAPI.Entity.Metadata;
 using AYUS_RestAPI.Utility;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -18,6 +19,7 @@ namespace AYUS_RestAPI.ASP.Controllers
             dataRepository = data;
         }
 
+        
         [HttpGet]
         public JsonResult GetAccount()
         {
