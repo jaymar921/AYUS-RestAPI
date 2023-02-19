@@ -1,9 +1,13 @@
-﻿namespace AYUS_RestAPI.ASP.Models.Request
+﻿using AYUS_RestAPI.ASP.Models.Request.MetaData;
+using AYUS_RestAPI.Entity.Metadata;
+
+namespace AYUS_RestAPI.ASP.Models.Request
 {
     public class AccountModel
     {
-        public string uuid { get; set; } = string.Empty;
-        public string username { get; set; } = "";
-        public string password { get; set; } = "";
+        public PersonalInformationModel personalInformation { get; set; } = new PersonalInformationModel();
+        public CredentialModel credential { get; set; } = new CredentialModel();
+        public WalletModel wallet { get; set; } = new WalletModel();
+        public AccountStatusModel accountStatus { get; set; } = new AccountStatusModel();
     }
 }

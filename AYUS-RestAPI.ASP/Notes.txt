@@ -113,3 +113,60 @@ accountStatus.setShop(shop);
 User user = new User(personal, credential, wallet, accountStatus, new List<Vehicle>());
 
 // Scaffold-DbContext "server=localhost;port=3306;user=root;database=AYUS-RestAPI-Db" Pomelo.EntityFrameworkCore.MySql -OutputDir DataObjects -f
+
+
+// MECHANIC DATA
+{
+    "personalInformation": {
+        "Firstname": "Harold",
+        "Lastname": "Cuico",
+        "Contact": "09123456789",
+        "Birthdate": "2000-09-21T00:00:00",
+        "Address": "Bogo City, Cebu",
+        "LicenseNumber": "G-2323232",
+        "Expiry": "2023-09-21T00:00:00"
+    },
+    "credential": {
+        "Username": "hcuico",
+        "Password": "hcuico",
+        "Email": "hcuico@gmail.com"
+    },
+    "wallet": {
+        "Balance": 0,
+        "Pincode": ""
+    },
+    "accountStatus": {
+        "Shop":{
+            "ShopName": "HaroldShopee",
+            "ShopDescription": "Pina ka poging Shop"
+        },
+        "Role": "MECHANIC"
+    }
+}
+
+
+// CLIENT DATA
+
+{
+    "personalInformation": {
+        "Firstname": "Jayharron Mar",
+        "Lastname": "Abejar",
+        "Contact": "09123456789",
+        "Birthdate": "2000-09-21T00:00:00",
+        "Address": "Talisay City, Cebu",
+        "LicenseNumber": "G-123123",
+        "Expiry": "2023-09-21T00:00:00"
+    },
+    "credential": {
+        "Username": "JayMar921",
+        "Password": "abejar123",
+        "Email": "jayharron@gmail.com"
+    },
+    "wallet": {
+        "Balance": 0,
+        "Pincode": ""
+    },
+    "accountStatus": {
+        "Role": "CLIENT"
+    }
+}
