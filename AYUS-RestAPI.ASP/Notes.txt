@@ -111,3 +111,5 @@ shop.Billings.Add(billing);
 accountStatus.setShop(shop);
 
 User user = new User(personal, credential, wallet, accountStatus, new List<Vehicle>());
+
+// Scaffold-DbContext "server=localhost;port=3306;user=root;database=AYUS-RestAPI-Db" Pomelo.EntityFrameworkCore.MySql -OutputDir DataObjects -f
