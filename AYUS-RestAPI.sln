@@ -3,11 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AYUS-RestAPI", "AYUS-RestAPI\AYUS-RestAPI.csproj", "{1AEA046D-AC1A-425F-B579-FE03F302B514}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AYUS-RestAPI", "AYUS-RestAPI\AYUS-RestAPI.csproj", "{1AEA046D-AC1A-425F-B579-FE03F302B514}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AYUS-RestAPI.ASP", "AYUS-RestAPI.ASP\AYUS-RestAPI.ASP.csproj", "{DA30D6A9-81D0-4837-889E-DA47ED73E21C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AYUS-RestAPI.ASP", "AYUS-RestAPI.ASP\AYUS-RestAPI.ASP.csproj", "{DA30D6A9-81D0-4837-889E-DA47ED73E21C}"
 	ProjectSection(ProjectDependencies) = postProject
 		{1AEA046D-AC1A-425F-B579-FE03F302B514} = {1AEA046D-AC1A-425F-B579-FE03F302B514}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E0842518-85EB-4D89-9591-0655E9953583}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
 Global

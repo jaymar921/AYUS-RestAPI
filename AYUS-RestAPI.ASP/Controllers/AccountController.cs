@@ -2,7 +2,6 @@
 using AYUS_RestAPI.ASP.Models.Request;
 using AYUS_RestAPI.Entity.Metadata;
 using AYUS_RestAPI.Utility;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -40,9 +39,12 @@ namespace AYUS_RestAPI.ASP.Controllers
             User? user = dataRepository.GetUserByUsernameAndPassword(username.ToString(), password.ToString().HashMD5()) ?? dataRepository.GetUser(uuid.ToString());
             if(user == null)
             {
+                User? _check_user_username = dataRepository.GetUserByUsername(username.ToString());
+                if(_check_user_username != null)
+                    return Json(new { Status = 401, Message = "Invalid Password, Access Denied" }, options);
                 return Json(new { Status = 404, Message = "Not found" }, options);
             }
-            return Json(user.ParseModel(), options);
+            return Json(new { Status = 200, Message = "Retrieved Account", AccountData=user.ParseModel() }, options);
         }
 
         [HttpPost]
@@ -76,7 +78,7 @@ namespace AYUS_RestAPI.ASP.Controllers
             }
             dataRepository.AddUser(user);
 
-            return Json(user.ParseModel(), options);
+            return Json(new { Status = 201, Message = "Account was successfully registered" }, options);
         }
 
         [HttpPut]
@@ -110,7 +112,41 @@ namespace AYUS_RestAPI.ASP.Controllers
             }
             dataRepository.UpdateUser(user);
 
-            return Json(user.ParseModel(), options);
+            return Json(new { Status = 204, Message = "Account was successfully updated" }, options);
+        }
+
+        [HttpPut]
+        [Route("Password")]
+        public JsonResult UpdatePassword(string uuid)
+        {
+            var options = new JsonSerializerOptions { WriteIndented = true };
+
+            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
+            {
+                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
+            }
+
+            if (apiKey != API_KEY)
+            {
+                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied!" }, options);
+            }
+            
+            var _existing = dataRepository.GetUser(uuid);
+            if (_existing == null)
+            {
+                return Json(new { Status = 404, Message = "No data found!" }, options);
+            }
+
+            if(!Request.Headers.TryGetValue("new-password", out var newpassword))
+            {
+                return Json(new { Status = 404, Message = "Please specify the new-password at the header of the request" }, options);
+            }
+
+            _existing.Credential.Password = newpassword.ToString().HashMD5();
+
+            dataRepository.UpdateUser(_existing);
+
+            return Json(new { Status = 204, Message = "Account password was successfully updated" }, options);
         }
     }
 }
