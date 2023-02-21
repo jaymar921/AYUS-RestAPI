@@ -63,6 +63,34 @@ namespace AYUS_RestAPI.ASP.Models
             return accountStatus;
         }
 
+        public static MechanicPartial ParseMechanicModel(this User user)
+        {
+            return new MechanicPartial
+            {
+                personalInformation = new PersonalInformationModel
+                {
+                    UUID = user.PersonalInformation.UUID,
+                    Firstname = user.PersonalInformation.Firstname,
+                    Lastname = user.PersonalInformation.Lastname,
+                    Contact = user.PersonalInformation.Contact,
+                    Birthdate = user.PersonalInformation.Birthdate,
+                    Address = user.PersonalInformation.Address,
+                    LicenseNumber = user.PersonalInformation.LicenseNumber,
+                    Expiry = user.PersonalInformation.Expiry,
+                },
+                accountStatus = new AccountStatusModel
+                {
+                    Role = user.AccountStatus.Role,
+                    Shop = user.AccountStatus.Role == "MECHANIC" ? new ShopModel
+                    {
+                        ShopID = user.AccountStatus.getShop().ShopID,
+                        ShopDescription = user.AccountStatus.getShop().ShopDescription,
+                        ShopName = user.AccountStatus.getShop().ShopName
+                    } : null
+                }
+            };
+        }
+
         public static AccountModel ParseModel(this User user)
         {
             return new AccountModel

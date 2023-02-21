@@ -1,4 +1,5 @@
-﻿using AYUS_RestAPI.Entity.Metadata;
+﻿using AYUS_RestAPI.Data;
+using AYUS_RestAPI.Entity.Metadata;
 using AYUS_RestAPI.Entity.Metadata.Mechanic;
 using System;
 
@@ -248,6 +249,42 @@ namespace AYUS_RestAPI.ASP.Models
             }
 
             return users;
+        }
+
+
+        public List<Session> GetAllSessions()
+        {
+            List<Session> sessions = new List<Session>();
+
+            _dbContext.sessions.ToList().ForEach(session =>
+            {
+                sessions.Add(session);
+            });
+
+            return sessions;
+        }
+
+        public Session? GetSession(string uuid)
+        {
+            return _dbContext.sessions.FirstOrDefault(s => s.SessionID == uuid);
+        }
+
+        public void AddSession(Session session)
+        {
+            _dbContext.sessions.Add(session);
+            _dbContext.SaveChanges();
+        }
+
+        public void UpdateSession(Session newSession)
+        {
+            Session? data = GetSession(newSession.SessionID);
+            if (data != null)
+            {
+                data.isActive = newSession.isActive;
+                data.TimeEnd = newSession.TimeEnd;
+                data.TransactionID = newSession.TransactionID;
+            }
+            _dbContext.SaveChanges();
         }
     }
 }
