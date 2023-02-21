@@ -213,5 +213,41 @@ namespace AYUS_RestAPI.ASP.Models
 
             return new User(personalInformation, credential, wallet, accountStatus, new List<Vehicle>());
         }
+
+        public IEnumerable<User> GetAllUser()
+        {
+            List<User> users = new List<User>();
+
+            List<PersonalInformation> personalInformation = _dbContext.personalInformation.ToList();
+            if (personalInformation == null)
+            {
+                return users;
+            }
+            foreach(PersonalInformation personal in personalInformation)
+            {
+                Credential credential = _dbContext.credential.First(c => c.UUID == personal.UUID);
+                Wallet wallet = _dbContext.wallets.First(w => w.UUID == personal.UUID);
+                AccountStatus accountStatus = _dbContext.accountStatus.First(a => a.UUID == personal.UUID);
+
+                if (accountStatus.GetRole == Enumerations.Roles.MECHANIC)
+                {
+
+                    Shop shop = _dbContext.shops.First(s => s.ShopID == accountStatus.ShopID);
+                    List<ServiceOffer> serviceOffer = _dbContext.serviceOffers.Where(so => so.ShopID == shop.ShopID).ToList();
+                    serviceOffer.ForEach(offer =>
+                    {
+                        offer.setService(_dbContext.services.First(service => service.ServiceID == offer.ServiceID));
+                    });
+                    _dbContext.billing.Where(bill => bill.ShopID == shop.ShopID).ToList().ForEach(
+                        bill => shop.Billings.Add(bill)
+                    );
+
+                    accountStatus.setShop(shop);
+                }
+                users.Add(new User(personal, credential, wallet, accountStatus, new List<Vehicle>()));
+            }
+
+            return users;
+        }
     }
 }
