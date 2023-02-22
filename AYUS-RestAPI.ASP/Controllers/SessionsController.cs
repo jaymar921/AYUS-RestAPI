@@ -193,14 +193,23 @@ namespace AYUS_RestAPI.ASP.Controllers
             Request.Headers.TryGetValue("ClientUUID", out var clientUUID);
             Request.Headers.TryGetValue("MechanicUUID", out var mechanicUUID);
             Request.Headers.TryGetValue("SessionID", out var sessionID);
+
+            // check if transaction header was found in the header of the request
             if(!Request.Headers.TryGetValue("TransactionID", out var transactID))
             {
                 return Json(new { Status = 401, Message = "TransactionID must be specified at the header of the request, make sure that the transaction has been done before ending the session" }, options);
             }
 
+            // check if the transaction id is already exist
             if(transactID.ToString() == string.Empty)
             {
                 return Json(new { Status = 401, Message = "TransactionID must not be empty, make sure that the transaction has been done before ending the session" }, options);
+            }
+
+            // Making sure that the transaction ID already exists in the database
+            if(dataRepository.GetTransaction(transactID.ToString()) == null)
+            {
+                return Json(new { Status = 404, Message = "Specified transaction was not found, make sure that the transaction was already created before calling this request." }, options);
             }
 
 
@@ -217,6 +226,8 @@ namespace AYUS_RestAPI.ASP.Controllers
                 }
             });
 
+
+            // return success if the session is already exist, because if not, no session can be ended if not created :)
             if(foundSession != null)
             {
                 foundSession.TransactionID = transactID;
@@ -225,6 +236,7 @@ namespace AYUS_RestAPI.ASP.Controllers
                 return Json(new { Status = 200, Message = $"Session with ID {sessionID} has been ended successfully" }, options);
             }
 
+            // return not found if no session was found 
             return Json(new { Status = 404, Message = "No session found" }, options);
         }
     }

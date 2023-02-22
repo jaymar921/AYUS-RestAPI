@@ -254,14 +254,7 @@ namespace AYUS_RestAPI.ASP.Models
 
         public List<Session> GetAllSessions()
         {
-            List<Session> sessions = new List<Session>();
-
-            _dbContext.sessions.ToList().ForEach(session =>
-            {
-                sessions.Add(session);
-            });
-
-            return sessions;
+            return _dbContext.sessions.ToList();
         }
 
         public Session? GetSession(string uuid)
@@ -285,6 +278,22 @@ namespace AYUS_RestAPI.ASP.Models
                 data.TransactionID = newSession.TransactionID;
             }
             _dbContext.SaveChanges();
+        }
+
+        public void AddTransaction(Transaction transaction)
+        {
+            _dbContext.transactions.Add(transaction);
+            _dbContext.SaveChanges();
+        }
+
+        public Transaction? GetTransaction(string uuid)
+        {
+            return _dbContext.transactions.FirstOrDefault(t => t.ID == uuid);
+        }
+
+        public List<Transaction> GetAllTransactions()
+        {
+            return _dbContext.transactions.ToList();
         }
     }
 }
