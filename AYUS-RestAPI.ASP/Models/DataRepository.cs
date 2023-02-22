@@ -295,5 +295,13 @@ namespace AYUS_RestAPI.ASP.Models
         {
             return _dbContext.transactions.ToList();
         }
+
+        public void ResetDatabase()
+        {
+            _dbContext.Database.EnsureDeleted();
+            _dbContext.SaveChanges();
+            _dbContext.Database.EnsureCreated();
+            _dbContext.SaveChanges();
+        }
     }
 }
