@@ -306,7 +306,7 @@ fetch("https://localhost:7172/api/Mechanic/Shop", {
 ```
 
 
-### Delete ServiceOffer from the Mechanic Shop [ARRAY]
+### Delete ServiceOffer from the Mechanic Shop
 ```JavaScript
 fetch("https://localhost:7172/api/Mechanic/Shop", {
 	method: "DELETE",
