@@ -1,3 +1,4 @@
+# API DOCUMENTATION
 # AYUS API DOCUMENTATION
 ### Prepared by Jayharron Mar Abejar
 > Used for frontend and backend interaction. The front-end system was built on a different framework [React for Client/Mechanic]() and [ASP for Admin](), this system is build for backend operation.
@@ -26,7 +27,7 @@ fetch("http://203.177.71.218:5003/api/Account", {
 		"Content-Type": "application/json"
 	},
 	body: {
-	    ...
+		...
 	}
 })
 ```
@@ -63,9 +64,9 @@ fetch("https://localhost:7172/api/Sessions/GetSession", {
 	method: "GET",
 	headers:{
 		"AYUS-API-KEY":"XXXXXXXX",
-        "ClientUUID": "xxxxx",     // if kabalo ka sa uid sa client, then only specify this
-        "MechanicUUID": "xxxxx",   // if kabalo ka sa uid sa mechanic, then only specify this
-        "SessionID": "xxxxx"       // if kabalo ka sa uid sa session, then only specify this
+		"ClientUUID": "xxxxx",     // if kabalo ka sa uid sa client, then only specify this
+		"MechanicUUID": "xxxxx",   // if kabalo ka sa uid sa mechanic, then only specify this
+		"SessionID": "xxxxx"       // if kabalo ka sa uid sa session, then only specify this
 	} 
 })
 ```
@@ -87,10 +88,10 @@ fetch("https://localhost:7172/api/Sessions/EndSession", {
 	method: "PUT",
 	headers:{
 		"AYUS-API-KEY":"XXXXXXXX",
-        "ClientUUID": "xxxxx",     // if kabalo ka sa uid sa client, then only specify this
-        "MechanicUUID": "xxxxx",   // if kabalo ka sa uid sa mechanic, then only specify this
-        "SessionID": "xxxxx"       // if kabalo ka sa uid sa session, then only specify this
-        "TransactionID": "xxxxx"   // THIS IS A MUST! dapat maka transact paka before maka end, [for testing, just put random string]
+		"ClientUUID": "xxxxx",     // if kabalo ka sa uid sa client, then only specify this
+		"MechanicUUID": "xxxxx",   // if kabalo ka sa uid sa mechanic, then only specify this
+		"SessionID": "xxxxx"       // if kabalo ka sa uid sa session, then only specify this
+		"TransactionID": "xxxxx"   // THIS IS A MUST! dapat maka transact paka before maka end, [for testing, just put random string]
 	} 
 })
 ```
@@ -149,12 +150,12 @@ fetch("https://localhost:7172/api/Account/Vehicle", {
 		"Content-Type": "application/json"
 	},
 	body: {
-	  "uuid": "638eafb1-29e0-40dc-b234-e91d6bac96fe", // user [client/admin/mechanic] UUID
-	  "plateNumber": "GKR287", // this will be the primary key
-	  "brand": "Toyota",
-	  "model": "Revo",
-	  "type": "Manual Transmission",
-	  "color": "Navy Green"
+		"uuid": "638eafb1-29e0-40dc-b234-e91d6bac96fe", // user [client/admin/mechanic] UUID
+		"plateNumber": "GKR287", // this will be the primary key
+		"brand": "Toyota",
+		"model": "Revo",
+		"type": "Manual Transmission",
+		"color": "Navy Green"
 	}
 })
 ```
@@ -192,9 +193,9 @@ fetch("https://localhost:7172/api/System/Service", {
 		"Content-Type": "application/json"
 	},
 	body: {
-	    "ServiceID": "string", // REQUIRED ON 'PUT' METHOD
-	    "ServiceName": "string",
-	    "ServiceDescription": "string"
+		"ServiceID": "string", // REQUIRED ON 'PUT' METHOD
+		"ServiceName": "string",
+		"ServiceDescription": "string"
 	}
 })
 ```
