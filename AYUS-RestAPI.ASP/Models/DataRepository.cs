@@ -33,7 +33,7 @@ namespace AYUS_RestAPI.ASP.Models
                 _dbContext.shops.Add(shop);
                 shop.ServiceOffers.ForEach(offer => {
 
-                    Service service = offer.getService();
+                    Service service = offer.GetService();
                     _dbContext.services.Add(service);
                     _dbContext.serviceOffers.Add(offer);
 
@@ -119,7 +119,7 @@ namespace AYUS_RestAPI.ASP.Models
                 List<ServiceOffer> serviceOffer = _dbContext.serviceOffers.Where( so => so.ShopID == shop.ShopID).ToList();
                 serviceOffer.ForEach(offer =>
                 {
-                    offer.setService(_dbContext.services.First(service => service.ServiceID == offer.ServiceID));
+                    offer.SetService(_dbContext.services.First(service => service.ServiceID == offer.ServiceID));
                 });
                 _dbContext.billing.Where(bill => bill.ShopID == shop.ShopID).ToList().ForEach(
                     bill => shop.Billings.Add(bill)
@@ -147,7 +147,7 @@ namespace AYUS_RestAPI.ASP.Models
                 List<ServiceOffer> serviceOffer = _dbContext.serviceOffers.Where(so => so.ShopID == shop.ShopID).ToList();
                 serviceOffer.ForEach(offer =>
                 {
-                    offer.setService(_dbContext.services.First(service => service.ServiceID == offer.ServiceID));
+                    offer.SetService(_dbContext.services.First(service => service.ServiceID == offer.ServiceID));
                 });
                 _dbContext.billing.Where(bill => bill.ShopID == shop.ShopID).ToList().ForEach(
                     bill => shop.Billings.Add(bill)
@@ -175,7 +175,7 @@ namespace AYUS_RestAPI.ASP.Models
                 List<ServiceOffer> serviceOffer = _dbContext.serviceOffers.Where(so => so.ShopID == shop.ShopID).ToList();
                 serviceOffer.ForEach(offer =>
                 {
-                    offer.setService(_dbContext.services.First(service => service.ServiceID == offer.ServiceID));
+                    offer.SetService(_dbContext.services.First(service => service.ServiceID == offer.ServiceID));
                 });
                 _dbContext.billing.Where(bill => bill.ShopID == shop.ShopID).ToList().ForEach(
                     bill => shop.Billings.Add(bill)
@@ -203,7 +203,7 @@ namespace AYUS_RestAPI.ASP.Models
                 List<ServiceOffer> serviceOffer = _dbContext.serviceOffers.Where(so => so.ShopID == shop.ShopID).ToList();
                 serviceOffer.ForEach(offer =>
                 {
-                    offer.setService(_dbContext.services.First(service => service.ServiceID == offer.ServiceID));
+                    offer.SetService(_dbContext.services.First(service => service.ServiceID == offer.ServiceID));
                 });
                 _dbContext.billing.Where(bill => bill.ShopID == shop.ShopID).ToList().ForEach(
                     bill => shop.Billings.Add(bill)
@@ -237,7 +237,7 @@ namespace AYUS_RestAPI.ASP.Models
                     List<ServiceOffer> serviceOffer = _dbContext.serviceOffers.Where(so => so.ShopID == shop.ShopID).ToList();
                     serviceOffer.ForEach(offer =>
                     {
-                        offer.setService(_dbContext.services.First(service => service.ServiceID == offer.ServiceID));
+                        offer.SetService(_dbContext.services.First(service => service.ServiceID == offer.ServiceID));
                     });
                     _dbContext.billing.Where(bill => bill.ShopID == shop.ShopID).ToList().ForEach(
                         bill => shop.Billings.Add(bill)
@@ -378,5 +378,118 @@ namespace AYUS_RestAPI.ASP.Models
         {
             return _dbContext.services.ToList();
         }
+
+        public void AddServiceOffer(ServiceOffer serviceOffer)
+        {
+            _dbContext.serviceOffers.Add(serviceOffer);
+            _dbContext.SaveChanges();
+        }
+
+        public ServiceOffer? GetServiceOffer(string uuid)
+        {
+            return _dbContext.serviceOffers.FirstOrDefault(s => s.UUID == uuid);
+        }
+
+        public List<ServiceOffer> GetAllServiceOffers()
+        {
+            return _dbContext.serviceOffers.ToList();
+        }
+
+        public List<ServiceOffer> GetAllServiceOffers(string shopID)
+        {
+            return _dbContext.serviceOffers.Where(so => so.ShopID == shopID).ToList();
+        }
+
+        public void DeleteServiceOffer(ServiceOffer serviceOffer)
+        {
+            _dbContext.serviceOffers.Remove(serviceOffer);
+            _dbContext.SaveChanges();
+        }
+
+        public void UpdateServiceOffer(ServiceOffer offer)
+        {
+            ServiceOffer? serviceOffer = _dbContext.serviceOffers.FirstOrDefault(s => s.UUID == offer.UUID);
+
+            if(serviceOffer != null)
+            {
+                serviceOffer.ServiceID = offer.ServiceID;
+                serviceOffer.Price = offer.Price;
+                serviceOffer.ServiceExpertise = offer.ServiceExpertise;
+
+                _dbContext.SaveChanges();
+            }
+        }
+
+        public void AddShop(Shop shop)
+        {
+            _dbContext.shops.Add(shop); 
+            _dbContext.SaveChanges();
+        }
+
+        public Shop? GetShop(string shopId)
+        {
+            return _dbContext.shops.FirstOrDefault(shop => shop.ShopID == shopId);
+        }
+
+        public List<Shop> GetAllShop()
+        {
+            return _dbContext.shops.ToList();
+        }
+
+        public void UpdateShop(Shop shop)
+        {
+            Shop? _shop = _dbContext.shops.FirstOrDefault(s => s.ShopID == shop.ShopID);
+            if(_shop != null)
+            {
+                _shop.ShopName = shop.ShopName;
+                _shop.ShopDescription = shop.ShopDescription;
+                _dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteShop(Shop shop)
+        {
+            _dbContext.shops.Remove(shop);
+            _dbContext.SaveChanges();
+        }
+
+        public void AddMapLocation(ServiceMapLocationAPI mapLocationAPI)
+        {
+            _dbContext.serviceMaps.Add(mapLocationAPI);
+            _dbContext.SaveChanges();
+        }
+
+        public ServiceMapLocationAPI? GetMapLocation(string sessionID)
+        {
+            return _dbContext.serviceMaps.FirstOrDefault(map => map.SessionID == sessionID);
+        }
+
+        public List<ServiceMapLocationAPI> GetAllMapLocation()
+        {
+            return _dbContext.serviceMaps.ToList();
+        }
+
+        public void UpdateMapLocation(ServiceMapLocationAPI serviceMap)
+        {
+            ServiceMapLocationAPI? s = _dbContext.serviceMaps.FirstOrDefault(sm => sm.SessionID == serviceMap.SessionID);
+
+            if(s != null)
+            {
+                s.ClientLocLat = serviceMap.ClientLocLat;
+                s.ClientLocLon = serviceMap.ClientLocLon;
+                s.MechanicLocLat = serviceMap.MechanicLocLat;
+                s.MechanicLocLon = serviceMap.MechanicLocLon;
+
+                _dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteMapLocation(ServiceMapLocationAPI serviceMap)
+        {
+            _dbContext.serviceMaps.Remove(serviceMap);
+            _dbContext.SaveChanges();
+        }
+
+        
     }
 }
