@@ -88,10 +88,10 @@ fetch("https://localhost:7172/api/Sessions/EndSession", {
 	method: "PUT",
 	headers:{
 		"AYUS-API-KEY":"XXXXXXXX",
-        "ClientUUID": "xxxxx",     // if kabalo ka sa uid sa client, then only specify this
-        "MechanicUUID": "xxxxx",   // if kabalo ka sa uid sa mechanic, then only specify this
-        "SessionID": "xxxxx"       // if kabalo ka sa uid sa session, then only specify this
-        "TransactionID": "xxxxx"   // THIS IS A MUST! dapat maka transact paka before maka end, [for testing, just put random string]
+		"ClientUUID": "xxxxx",     // if kabalo ka sa uid sa client, then only specify this
+		"MechanicUUID": "xxxxx",   // if kabalo ka sa uid sa mechanic, then only specify this
+		"SessionID": "xxxxx"       // if kabalo ka sa uid sa session, then only specify this
+		"TransactionID": "xxxxx"   // THIS IS A MUST! dapat maka transact paka before maka end, [for testing, just put random string]
 	} 
 })
 ```
