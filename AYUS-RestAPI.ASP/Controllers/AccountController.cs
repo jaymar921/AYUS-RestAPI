@@ -35,7 +35,17 @@ namespace AYUS_RestAPI.ASP.Controllers
             Request.Headers.TryGetValue("uuid", out var uuid);
             Request.Headers.TryGetValue("username", out var username);
             Request.Headers.TryGetValue("password", out var password);
-;
+
+            if(Request.Headers.TryGetValue("option", out var opt))
+            {
+                if(opt.ToString().ToLower() == "all")
+                {
+                    List<AccountModel> users = new();
+                    dataRepository.GetAllUser().ToList().ForEach(user => users.Add(user.ParseModel()));
+                    return Json(new { Status = 200, Message = "Retrieved Account", Accounts = users}, options);
+                }
+            }
+            
             User? user = dataRepository.GetUserByUsernameAndPassword(username.ToString(), password.ToString().HashMD5()) ?? dataRepository.GetUser(uuid.ToString());
             if(user == null)
             {

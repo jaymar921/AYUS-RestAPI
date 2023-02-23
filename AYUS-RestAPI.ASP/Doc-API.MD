@@ -8,19 +8,21 @@
 # ACCOUNT
 ### GET Account
 ```JavaScript
-fetch("http://203.177.71.218:5003/api/Account", {
+fetch("https://localhost:7172/api/Account", {
 	method: "GET",
 	headers:{
 		"AYUS-API-KEY":"XXXXXXXX",
-		"username": "---",
-		"password": "---"
+		"username": "---",  // Use Username & Password to retrieve account
+		"password": "---", // Use Username & Password to retrieve account
+		"uuid": "xxxxx", // Use UUID retrieve account  *optional*
+		"option": "all" // Retrieves an array of all accounts  *optional*
 	}
 })
 ```
 
 ### POST account
 ```JavaScript
-fetch("http://203.177.71.218:5003/api/Account", {
+fetch("https://localhost:7172/api/Account", {
 	method: "POST",
 	headers:{
 		"AYUS-API-KEY":"XXXXXXXX",
@@ -34,7 +36,7 @@ fetch("http://203.177.71.218:5003/api/Account", {
 
 ### PUT account [reset password]
 ```JavaScript
-fetch("http://203.177.71.218:5003/api/Account/Password?uuid=****", {
+fetch("https://localhost:7172/api/Account/Password?uuid=****", {
 	method: "PUT",
 	headers:{
 		"AYUS-API-KEY":"XXXXXXXX",
@@ -51,7 +53,8 @@ fetch("https://localhost:7172/api/Sessions/RegisterSession", {
 	headers:{
 		"AYUS-API-KEY":"XXXXXXXX",
         "ClientUUID": "xxxxx",
-        "MechanicUUID": "xxxxx"
+        "MechanicUUID": "xxxxx",
+		"SessionDetails": "xxxxx"
 	}
 })
 ```
@@ -150,12 +153,12 @@ fetch("https://localhost:7172/api/Account/Vehicle", {
 		"Content-Type": "application/json"
 	},
 	body: {
-	  "uuid": "638eafb1-29e0-40dc-b234-e91d6bac96fe", // user [client/admin/mechanic] UUID
-	  "plateNumber": "GKR287", // this will be the primary key
-	  "brand": "Toyota",
-	  "model": "Revo",
-	  "type": "Manual Transmission",
-	  "color": "Navy Green"
+		"uuid": "638eafb1-29e0-40dc-b234-e91d6bac96fe", // user [client/admin/mechanic] UUID
+	  	"plateNumber": "GKR287", // this will be the primary key
+	  	"brand": "Toyota",
+	  	"model": "Revo",
+	  	"type": "Manual Transmission",
+	  	"color": "Navy Green"
 	}
 })
 ```
@@ -244,3 +247,72 @@ fetch("https://localhost:7172/api/Wallet?uuid=XXXXX", {
 	}
 })
 ```
+
+# MECHANIC
+### Get the mechanic Shop
+```JavaScript
+fetch("https://localhost:7172/api/Mechanic/Shop", {
+	method: "GET",
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX",
+		"MechanicUUID": "XXXXX", // [REQUIRED]
+	}
+})
+```
+
+### Update the mechanic Shop
+```JavaScript
+fetch("https://localhost:7172/api/Mechanic/Shop", {
+	method: "PUT",
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX",
+		"MechanicUUID": "XXXXX", // [REQUIRED]
+		"Content-Type": "application/json"
+	},
+	body:{
+		"ShopName": "HaroldShopee",
+        "ShopDescription": "Pina ka poging Shop"
+	}
+})
+```
+
+## Service Offer [What services does the shop offer?]
+### Add ServiceOffer to the Mechanic Shop
+```JavaScript
+fetch("https://localhost:7172/api/Mechanic/Shop", {
+	method: "POST",
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX",
+		"MechanicUUID": "XXXXX", // [REQUIRED]
+		"Content-Type": "application/json"
+	},
+	body:{
+		"serviceID": "XXXXXX", // Make sure that the Service exists already, [do [GET]api/System/Service first]
+		"price": Number,
+		"serviceExpertise": "I work on a company before with battery jumpstart related, I have confident on this skill"
+	}
+})
+```
+
+### Get ServiceOffer from the Mechanic Shop [ARRAY]
+```JavaScript
+fetch("https://localhost:7172/api/Mechanic/Shop", {
+	method: "POST",
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX",
+		"MechanicUUID": "XXXXX", // [REQUIRED]
+	}
+})
+```
+
+
+### Delete ServiceOffer from the Mechanic Shop
+```JavaScript
+fetch("https://localhost:7172/api/Mechanic/Shop", {
+	method: "DELETE",
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX",
+		"MechanicUUID": "XXXXX", // [REQUIRED]
+		"ServiceOfferUUID": "XXXXXX" // [REQUIRED]
+	}
+})

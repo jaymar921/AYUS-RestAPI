@@ -29,7 +29,7 @@ namespace AYUS_RestAPI.ASP.Models
             vehicles.ForEach( vehicle => { _dbContext.vehicles.Add(vehicle); });
 
             if (accountStatus.GetRole == Enumerations.Roles.MECHANIC){
-                Shop shop = accountStatus.getShop();
+                Shop shop = accountStatus.GetShop();
                 _dbContext.shops.Add(shop);
                 shop.ServiceOffers.ForEach(offer => {
 
@@ -125,7 +125,7 @@ namespace AYUS_RestAPI.ASP.Models
                     bill => shop.Billings.Add(bill)
                 );
                 
-                accountStatus.setShop(shop);
+                accountStatus.SetShop(shop);
             }
 
             return new User(personalInformation, credential, wallet, accountStatus, new List<Vehicle>());
@@ -153,7 +153,7 @@ namespace AYUS_RestAPI.ASP.Models
                     bill => shop.Billings.Add(bill)
                 );
 
-                accountStatus.setShop(shop);
+                accountStatus.SetShop(shop);
             }
 
             return new User(personalInformation, credential, wallet, accountStatus, new List<Vehicle>());
@@ -181,7 +181,7 @@ namespace AYUS_RestAPI.ASP.Models
                     bill => shop.Billings.Add(bill)
                 );
 
-                accountStatus.setShop(shop);
+                accountStatus.SetShop(shop);
             }
 
             return new User(personalInformation, credential, wallet, accountStatus, new List<Vehicle>());
@@ -209,7 +209,7 @@ namespace AYUS_RestAPI.ASP.Models
                     bill => shop.Billings.Add(bill)
                 );
 
-                accountStatus.setShop(shop);
+                accountStatus.SetShop(shop);
             }
 
             return new User(personalInformation, credential, wallet, accountStatus, new List<Vehicle>());
@@ -243,7 +243,7 @@ namespace AYUS_RestAPI.ASP.Models
                         bill => shop.Billings.Add(bill)
                     );
 
-                    accountStatus.setShop(shop);
+                    accountStatus.SetShop(shop);
                 }
                 users.Add(new User(personal, credential, wallet, accountStatus, new List<Vehicle>()));
             }
@@ -428,7 +428,8 @@ namespace AYUS_RestAPI.ASP.Models
 
         public Shop? GetShop(string shopId)
         {
-            return _dbContext.shops.FirstOrDefault(shop => shop.ShopID == shopId);
+            Shop? shop = _dbContext.shops.FirstOrDefault(shop => shop.ShopID == shopId);
+            return shop;
         }
 
         public List<Shop> GetAllShop()

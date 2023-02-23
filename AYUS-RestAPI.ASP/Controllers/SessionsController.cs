@@ -82,6 +82,7 @@ namespace AYUS_RestAPI.ASP.Controllers
 
             Request.Headers.TryGetValue("ClientUUID", out var clientUUID);
             Request.Headers.TryGetValue("MechanicUUID", out var mechanicUUID);
+            Request.Headers.TryGetValue("SessionDetails", out var sessionDetails);
 
             if (clientUUID.ToString() == mechanicUUID.ToString())
             {
@@ -131,6 +132,7 @@ namespace AYUS_RestAPI.ASP.Controllers
             {
                 ClientUUID = clientUUID.ToString(),
                 MechanicUUID = mechanicUUID.ToString(),
+                SessionDetails = sessionDetails.ToString()
             };
 
             dataRepository.AddSession(session);

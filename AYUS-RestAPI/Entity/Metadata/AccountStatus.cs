@@ -19,8 +19,8 @@ namespace AYUS_RestAPI.Entity.Metadata
             Shop = shop;
         }
 
-        public Shop getShop() { return Shop; }
-        public void setShop(Shop shop) { Shop = shop; }
+        public Shop GetShop() { return Shop; }
+        public void SetShop(Shop shop) { Shop = shop; }
 
         public Roles GetRole { get { return (new Roles()).GetRoles(Role);  } }
     }

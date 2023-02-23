@@ -53,7 +53,7 @@ namespace AYUS_RestAPI.ASP.Models
                 Role = model.Role,
                 ShopID = model.Shop?.ShopID ?? "",
             };
-            accountStatus.setShop(new Entity.Metadata.Mechanic.Shop
+            accountStatus.SetShop(new Entity.Metadata.Mechanic.Shop
             {
                 ShopID = model.Shop?.ShopID ?? "",
                 ShopDescription = model.Shop?.ShopDescription ?? "",
@@ -83,9 +83,9 @@ namespace AYUS_RestAPI.ASP.Models
                     Role = user.AccountStatus.Role,
                     Shop = user.AccountStatus.Role == "MECHANIC" ? new ShopModel
                     {
-                        ShopID = user.AccountStatus.getShop().ShopID,
-                        ShopDescription = user.AccountStatus.getShop().ShopDescription,
-                        ShopName = user.AccountStatus.getShop().ShopName
+                        ShopID = user.AccountStatus.GetShop().ShopID,
+                        ShopDescription = user.AccountStatus.GetShop().ShopDescription,
+                        ShopName = user.AccountStatus.GetShop().ShopName
                     } : null
                 }
             };
@@ -122,9 +122,9 @@ namespace AYUS_RestAPI.ASP.Models
                     Role = user.AccountStatus.Role,
                     Shop = user.AccountStatus.Role == "MECHANIC" ? new ShopModel
                     {
-                        ShopID = user.AccountStatus.getShop().ShopID,
-                        ShopDescription = user.AccountStatus.getShop().ShopDescription,
-                        ShopName = user.AccountStatus.getShop().ShopName
+                        ShopID = user.AccountStatus.GetShop().ShopID,
+                        ShopDescription = user.AccountStatus.GetShop().ShopDescription,
+                        ShopName = user.AccountStatus.GetShop().ShopName
                     } : null
                 }
             };

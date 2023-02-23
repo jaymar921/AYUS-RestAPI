@@ -9,6 +9,7 @@ namespace AYUS_RestAPI.Data
         public string ClientUUID { get; set; } = string.Empty;
         public string MechanicUUID { get; set; } = string.Empty;
         public string TransactionID { get; set; } = string.Empty;
+        public string SessionDetails { get; set; } = string.Empty;
         public DateTime TimeStart { get; set; } = DateTime.UtcNow;
         public DateTime? TimeEnd { get; set; } = null;
         public bool isActive { get; set; } = true;
