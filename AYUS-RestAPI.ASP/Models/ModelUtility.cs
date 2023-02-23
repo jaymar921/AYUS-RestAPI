@@ -129,5 +129,25 @@ namespace AYUS_RestAPI.ASP.Models
                 }
             };
         }
+
+
+        public static List<object> ParseVehicles(this List<Vehicle> vehicles)
+        {
+            List<object> obj = new List<object>();
+
+            foreach (Vehicle vehicle in vehicles)
+            {
+                obj.Add(new
+                {
+                    vehicle.PlateNumber,
+                    vehicle.Brand,
+                    vehicle.Model,
+                    vehicle.Type,
+                    vehicle.Color
+                });
+            }
+
+            return obj;
+        }
     }
 }

@@ -5,7 +5,7 @@ namespace AYUS_RestAPI.Entity.Metadata.Mechanic
     public class Service
     {
         [Key]
-        public string ServiceID { get; set; } = string.Empty;
+        public string ServiceID { get; set; } = Guid.NewGuid().ToString();
         public string ServiceName { get; set; } = string.Empty;
         public string ServiceDescription { get; set; } = string.Empty;
     }

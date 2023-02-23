@@ -148,5 +148,149 @@ namespace AYUS_RestAPI.ASP.Controllers
 
             return Json(new { Status = 204, Message = "Account password was successfully updated" }, options);
         }
+
+        [HttpPost]
+        [Route("Vehicle")]
+        public JsonResult RegisterVehicle(Vehicle model)
+        {
+            var options = new JsonSerializerOptions { WriteIndented = true };
+
+            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
+            {
+                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
+            }
+
+            if (apiKey != API_KEY)
+            {
+                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied!" }, options);
+            }
+
+            if (!TryValidateModel(model))
+            {
+                return Json(new { Status = 400, Message = "Invalid data format" }, options);
+            }
+
+            if (dataRepository.GetUser(model.UUID) == null)
+            {
+                return Json(new { Status = 401, Message = $"The user with UUID '{model.UUID}' does not exist." }, options);
+            }
+
+            // check if the vehicle already exist
+            if(dataRepository.GetVehicleByPlateNumber(model.PlateNumber) != null)
+            {
+                return Json(new { Status = 401, Message = $"Vehicle with PlateNumber '{model.PlateNumber}' already exist in the database. change the method to 'PUT' to update vehicle information." }, options);
+            }
+
+            dataRepository.AddVehicle(model);
+            
+
+            return Json(new { Status = 201, Message = "Vehicle was registered successfully", Info=model }, options);
+        }
+
+        [HttpPut]
+        [Route("Vehicle")]
+        public JsonResult UpdateVehicle(Vehicle model)
+        {
+            var options = new JsonSerializerOptions { WriteIndented = true };
+
+            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
+            {
+                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
+            }
+
+            if (apiKey != API_KEY)
+            {
+                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied!" }, options);
+            }
+
+            if (!TryValidateModel(model))
+            {
+                return Json(new { Status = 400, Message = "Invalid data format" }, options);
+            }
+
+            if (dataRepository.GetUser(model.UUID) == null)
+            {
+                return Json(new { Status = 401, Message = $"The user with UUID '{model.UUID}' does not exist." }, options);
+            }
+
+            // check if the vehicle already exist
+            if (dataRepository.GetVehicleByPlateNumber(model.PlateNumber) == null)
+            {
+                return Json(new { Status = 401, Message = $"Vehicle with PlateNumber '{model.PlateNumber}' does not exist in the database. Use 'POST' method to register vehicle instead." }, options);
+            }
+
+            dataRepository.UpdateVehicle(model);
+
+
+            return Json(new { Status = 204, Message = "Vehicle was updated successfully", Info=model }, options);
+        }
+
+        [HttpDelete]
+        [Route("Vehicle")]
+        public JsonResult DeleteVehicle()
+        {
+            var options = new JsonSerializerOptions { WriteIndented = true };
+
+            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
+            {
+                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
+            }
+
+            if (apiKey != API_KEY)
+            {
+                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied!" }, options);
+            }
+
+            if (!Request.Headers.TryGetValue("PlateNumber", out var plateNumber))
+            {
+                return Json(new { Status = 401, Message = "Please specify the PlateNumber at the header of the request" }, options);
+            }
+
+            Vehicle? vehicle = dataRepository.GetVehicleByPlateNumber(plateNumber.ToString());
+
+            if(vehicle == null)
+            {
+                return Json(new { Status = 404, Message = $"Vehicle with PlateNumber '{plateNumber}' does not exist" }, options);
+            }
+
+            dataRepository.DeleteVehicle(vehicle);
+
+
+            return Json(new { Status = 200, Message = $"Vehicle with PlateNumber '{plateNumber}' was deleted successfully" }, options);
+        }
+
+        [HttpGet]
+        [Route("Vehicle")]
+        public JsonResult GetVehicle()
+        {
+            var options = new JsonSerializerOptions { WriteIndented = true };
+
+            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
+            {
+                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
+            }
+
+            if (apiKey != API_KEY)
+            {
+                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied!" }, options);
+            }
+
+            if (!Request.Headers.TryGetValue("uuid", out var uuid))
+            {
+                return Json(new { Status = 401, Message = "Please specify the uuid at the header of the request" }, options);
+            }
+
+            User? user = dataRepository.GetUser(uuid.ToString());
+            if (user == null)
+            {
+                return Json(new { Status = 404, Message = $"The user with UUID '{uuid}' does not exist." }, options);
+            }
+
+            List<Vehicle> vehicles = dataRepository.GetVehicle(uuid.ToString());
+
+
+
+            return Json(new { Status = 200, Message = $"Retrieved list of vehicle from user {user.Credential.Username}", Vehicles=vehicles.ParseVehicles() }, options);
+        }
     }
 }

@@ -303,5 +303,80 @@ namespace AYUS_RestAPI.ASP.Models
             _dbContext.Database.EnsureCreated();
             _dbContext.SaveChanges();
         }
+
+        public void AddVehicle(Vehicle vehicle)
+        {
+            _dbContext.vehicles.Add(vehicle);
+            _dbContext.SaveChanges();
+        }
+
+        public List<Vehicle> GetVehicle(string uuid)
+        {
+            return _dbContext.vehicles.Where(v => v.UUID== uuid).ToList();
+        }
+
+        public Vehicle? GetVehicleByPlateNumber(string plateNumber)
+        {
+            return _dbContext.vehicles.FirstOrDefault(v => v.PlateNumber== plateNumber);
+        }
+
+        public void DeleteVehicle(Vehicle vehicle)
+        {
+            _dbContext.vehicles.Remove(vehicle);
+            _dbContext.SaveChanges();
+        }
+
+        public void UpdateVehicle(Vehicle vehicle)
+        {
+            Vehicle? old = GetVehicleByPlateNumber(vehicle.PlateNumber);
+
+            if(old != null)
+            {
+                old.Model = vehicle.Model;
+                old.Color = vehicle.Color;
+                old.Brand = vehicle.Brand;
+                old.Type = vehicle.Type;
+                _dbContext.SaveChanges();
+            }
+        }
+
+        public Service? GetService(string uuid)
+        {
+            return _dbContext.services.FirstOrDefault(service => service.ServiceID== uuid || service.ServiceName == uuid);
+        }
+
+        public Service? GetServiceByName(string name)
+        {
+            return GetService(name);
+        }
+
+        public void AddService(Service service)
+        {
+            _dbContext.services.Add(service);
+            _dbContext.SaveChanges();
+        }
+
+        public void UpdateService(Service service)
+        {
+            Service? old = GetService(service.ServiceID);
+
+            if(old != null)
+            {
+                old.ServiceDescription = service.ServiceDescription;
+                old.ServiceName = service.ServiceName;
+                _dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteService(Service service)
+        {
+            _dbContext.services.Remove(service);
+            _dbContext.SaveChanges();
+        }
+
+        public List<Service> GetAllServices()
+        {
+            return _dbContext.services.ToList();
+        }
     }
 }
