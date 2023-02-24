@@ -46,7 +46,7 @@ namespace AYUS_RestAPI.ASP.Controllers
                 }
             }
             
-            User? user = dataRepository.GetUserByUsernameAndPassword(username.ToString(), password.ToString().HashMD5()) ?? dataRepository.GetUser(uuid.ToString());
+            User? user = dataRepository.GetUserByUsernameAndPassword(username.ToString(), password.ToString().HashSHA256()) ?? dataRepository.GetUser(uuid.ToString());
             if(user == null)
             {
                 User? _check_user_username = dataRepository.GetUserByUsername(username.ToString());
@@ -180,7 +180,7 @@ namespace AYUS_RestAPI.ASP.Controllers
                 return Json(new { Status = 404, Message = "Please specify the new-password at the header of the request" }, options);
             }
 
-            _existing.Credential.Password = newpassword.ToString().HashMD5();
+            _existing.Credential.Password = newpassword.ToString().HashSHA256();
 
             dataRepository.UpdateUser(_existing);
 

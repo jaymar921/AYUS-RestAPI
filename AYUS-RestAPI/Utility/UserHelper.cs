@@ -1,4 +1,5 @@
 ﻿using AYUS_RestAPI.Entity.Metadata;
+using System.Text;
 
 namespace AYUS_RestAPI.Utility
 {
@@ -32,6 +33,21 @@ namespace AYUS_RestAPI.Utility
                 // }
                 // return sb.ToString();
             }
+        }
+
+        public static string HashSHA256(this string input)
+        {
+            using (System.Security.Cryptography.SHA256 sha256 = System.Security.Cryptography.SHA256.Create())
+            {
+                var hash = new StringBuilder();
+                byte[] crypto = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
+                foreach (byte theByte in crypto)
+                {
+                    hash.Append(theByte.ToString("x2"));
+                }
+                return hash.ToString();
+            }
+                
         }
     }
 }

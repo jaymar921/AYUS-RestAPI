@@ -39,7 +39,7 @@ namespace AYUS_RestAPI.ASP.Models
             return new Credential
             {
                 UUID = uuid,
-                Password = model.Password.HashMD5(),
+                Password = model.Password.HashSHA256(),
                 Username = model.Username,
                 Email = model.Email
             };
