@@ -38,6 +38,7 @@ fetch("https://localhost:7172/api/Account", {
 // POST/PUT body for Clients/Mechanics/Admins
 {
     "personalInformation": {
+		"uuid": String, // specify ONLY on 'PUT' method
         "Firstname": String,
         "Lastname": String,
         "Contact": String,
@@ -56,7 +57,7 @@ fetch("https://localhost:7172/api/Account", {
         "Pincode": String
     },
     "accountStatus": {
-        "Shop": {   // SET SHOP = 'null' if not MECHANIC
+        "Shop": {   // SET SHOP = 'null' if not MECHANIC, this is fixed, to update, do [/api/Mechanic/Shop]
             "ShopName": String,
             "ShopDescription": String
         },
@@ -94,8 +95,8 @@ fetch("https://localhost:7172/api/Sessions/RegisterSession", {
 	method: "POST",
 	headers:{
 		"AYUS-API-KEY":"XXXXXXXX",
-        "ClientUUID": "xxxxx",
-        "MechanicUUID": "xxxxx",
+		"ClientUUID": "xxxxx",
+		"MechanicUUID": "xxxxx",
 		"SessionDetails": "xxxxx"
 	}
 })
@@ -313,7 +314,7 @@ fetch("https://localhost:7172/api/Mechanic/Shop", {
 	},
 	body:{
 		"ShopName": "HaroldShopee",
-        "ShopDescription": "Pina ka poging Shop"
+		"ShopDescription": "Pina ka poging Shop"
 	}
 })
 ```
@@ -358,3 +359,50 @@ fetch("https://localhost:7172/api/Mechanic/Shop", {
 		"ServiceOfferUUID": "XXXXXX" // [REQUIRED]
 	}
 })
+```
+
+# Service Request
+### Get a list of service Request from a mechanic UUID or a specific service request from ServiceRequestUuid
+```JavaScript
+fetch("https://localhost:7172/api/ServiceRequest", {
+	method: "GET",
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX",
+		"MechanicUUID": "XXXXX", // [REQUIRED]
+		"ServiceRequestUUID": "XXXXXX" // *optiona;*
+	}
+})
+```
+
+### Register a service Request
+```JavaScript
+fetch("https://localhost:7172/api/ServiceRequest", {
+	method: "POST",
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX",
+		"MechanicUUID": "XXXXX", // [REQUIRED]
+		"ServiceRequestUUID": "XXXXXX" // *optional*
+	},
+	body: {
+		"requestor": String, // CLIENT UUID
+		"recepient": String, // MECHANIC UUID
+		"contact": String,
+		"location": String,
+		"vehicle": String,
+		"service": String,
+		"description": String,
+		"picture": null
+	}
+})
+```
+
+### Delete a service request
+```JavaScript
+fetch("https://localhost:7172/api/ServiceRequest", {
+	method: "DELETE",
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX",
+		"ServiceRequestUUID": "XXXXXX" // [REQUIRED]
+	}
+})
+```

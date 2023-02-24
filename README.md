@@ -359,3 +359,51 @@ fetch("https://localhost:7172/api/Mechanic/Shop", {
 		"ServiceOfferUUID": "XXXXXX" // [REQUIRED]
 	}
 })
+```
+
+# Service Request
+### Get a list of service Request from a mechanic UUID or a specific service request from ServiceRequestUuid
+```JavaScript
+fetch("https://localhost:7172/api/ServiceRequest", {
+	method: "GET",
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX",
+		"MechanicUUID": "XXXXX", // [REQUIRED]
+		"ServiceRequestUUID": "XXXXXX" // *optiona;*
+	}
+})
+```
+
+### Register a service Request
+```JavaScript
+fetch("https://localhost:7172/api/ServiceRequest", {
+	method: "POST",
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX",
+		"MechanicUUID": "XXXXX", // [REQUIRED]
+		"ServiceRequestUUID": "XXXXXX" // *optional*
+	},
+	body: {
+		"requestor": String, // CLIENT UUID
+		"recepient": String, // MECHANIC UUID
+		"contact": String,
+		"location": String,
+		"vehicle": String,
+		"service": String,
+		"description": String,
+		"picture": null
+	}
+})
+```
+
+### Delete a service request
+> Before deleting, you must get the ServiceRequest data and store it in the SessionDetails [Only if the mechanic accepts the offer]
+```JavaScript
+fetch("https://localhost:7172/api/ServiceRequest", {
+	method: "DELETE",
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX",
+		"ServiceRequestUUID": "XXXXXX" // [REQUIRED]
+	}
+})
+```

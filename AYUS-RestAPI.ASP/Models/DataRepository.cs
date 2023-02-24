@@ -30,6 +30,8 @@ namespace AYUS_RestAPI.ASP.Models
 
             if (accountStatus.GetRole == Enumerations.Roles.MECHANIC){
                 Shop shop = accountStatus.GetShop();
+                shop.ShopID = Guid.NewGuid().ToString();
+
                 _dbContext.shops.Add(shop);
                 shop.ServiceOffers.ForEach(offer => {
 

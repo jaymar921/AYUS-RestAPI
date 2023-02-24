@@ -170,3 +170,6 @@ User user = new User(personal, credential, wallet, accountStatus, new List<Vehic
         "Role": "CLIENT"
     }
 }
+
+a5cc6b9b-b3aa-4781-940f-e1b4e8bc5182 <- client
+93fcd3f4-3744-460f-8d47-cf640f262617 <- mechanic
