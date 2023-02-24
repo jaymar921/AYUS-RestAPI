@@ -12,18 +12,18 @@ fetch("https://localhost:7172/api/Account", {
 	method: "GET",
 	headers:{
 		"AYUS-API-KEY":"XXXXXXXX",
-		"username": "---",  // Use Username & Password to retrieve account
-		"password": "---", // Use Username & Password to retrieve account
+		"username": "---",  // Use Username & Password to retrieve account [Must come with password]
+		"password": "---", // Use Username & Password to retrieve account [Must come with username]
 		"uuid": "xxxxx", // Use UUID retrieve account  *optional*
 		"option": "all" // Retrieves an array of all accounts  *optional*
 	}
 })
 ```
 
-### POST account
+### POST/PUT account
 ```JavaScript
 fetch("https://localhost:7172/api/Account", {
-	method: "POST",
+	method: "POST", // Change to 'PUT' if you are updating the data
 	headers:{
 		"AYUS-API-KEY":"XXXXXXXX",
 		"Content-Type": "application/json"
@@ -34,6 +34,37 @@ fetch("https://localhost:7172/api/Account", {
 })
 ```
 
+```JavaScript
+// POST/PUT body for Clients/Mechanics/Admins
+{
+    "personalInformation": {
+        "Firstname": String,
+        "Lastname": String,
+        "Contact": String,
+        "Birthdate": DateTime,
+        "Address": String,
+        "LicenseNumber": String,
+        "Expiry": DateTime
+    },
+    "credential": {
+        "Username": String,
+        "Password": String, // will be hashed in the server
+        "Email": String
+    },
+    "wallet": {
+        "Balance": Number,
+        "Pincode": String
+    },
+    "accountStatus": {
+        "Shop": {   // SET SHOP = 'null' if not MECHANIC
+            "ShopName": String,
+            "ShopDescription": String
+        },
+        "Role": "CLIENT" // MECHANIC/ADMIN
+    }
+}
+```
+
 ### PUT account [reset password]
 ```JavaScript
 fetch("https://localhost:7172/api/Account/Password?uuid=****", {
@@ -41,6 +72,17 @@ fetch("https://localhost:7172/api/Account/Password?uuid=****", {
 	headers:{
 		"AYUS-API-KEY":"XXXXXXXX",
 		"new-password":"----"
+	}
+})
+```
+
+### Delete Account
+```JavaScript
+fetch("https://localhost:7172/api/Account", {
+	method: "DELETE",
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX",
+		"uuid": "xxxxx", // Use UUID delete account
 	}
 })
 ```

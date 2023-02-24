@@ -125,6 +125,34 @@ namespace AYUS_RestAPI.ASP.Controllers
             return Json(new { Status = 204, Message = "Account was successfully updated" }, options);
         }
 
+        [HttpDelete]
+        public JsonResult DeleteAccount()
+        {
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
+            {
+                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
+            }
+
+            if (apiKey != API_KEY)
+            {
+                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied" }, options);
+            }
+            Request.Headers.TryGetValue("uuid", out var uuid);
+
+
+            User? user = dataRepository.GetUser(uuid.ToString());
+
+            if(user == null)
+            {
+                return Json(new { Status = 404, Message = "Account not found" }, options);
+            }
+
+            dataRepository.DeleteUser(user.PersonalInformation.UUID);
+
+            return Json(new { Status = 200, Message = "Deleted Account, see info for details", Info = user.ParseModel() }, options);
+        }
+
         [HttpPut]
         [Route("Password")]
         public JsonResult UpdatePassword(string uuid)

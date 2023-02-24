@@ -251,6 +251,47 @@ namespace AYUS_RestAPI.ASP.Models
             return users;
         }
 
+        public void DeleteUser(string uuid)
+        {
+            PersonalInformation? personalInformation = _dbContext.personalInformation.FirstOrDefault(p => p.UUID == uuid);
+            if (personalInformation == null)
+            {
+                return;
+            }
+
+            _dbContext.personalInformation.Remove(personalInformation);
+
+            Credential credential = _dbContext.credential.First(c => c.UUID == uuid);
+            _dbContext.credential.Remove(credential);
+
+            Wallet wallet = _dbContext.wallets.First(w => w.UUID == uuid);
+            _dbContext.wallets.Remove(wallet);
+
+            AccountStatus accountStatus = _dbContext.accountStatus.First(a => a.UUID == uuid);
+            _dbContext.accountStatus.Remove(accountStatus);
+
+            if (accountStatus.GetRole == Enumerations.Roles.MECHANIC)
+            {
+                Shop shop = _dbContext.shops.First(s => s.ShopID == accountStatus.ShopID);
+                _dbContext.shops.Remove(shop);
+
+                List<ServiceOffer> serviceOffer = _dbContext.serviceOffers.Where(so => so.ShopID == shop.ShopID).ToList();
+                serviceOffer.ForEach(offer =>
+                {
+                    _dbContext.serviceOffers.Remove(offer);
+                });
+                /*
+                _dbContext.billing.Where(bill => bill.ShopID == shop.ShopID).ToList().ForEach(
+                   
+                );
+                */
+                accountStatus.SetShop(shop);
+            }
+
+            _dbContext.SaveChanges();
+
+        }
+
 
         public List<Session> GetAllSessions()
         {
