@@ -46,6 +46,10 @@ namespace AYUS_RestAPI.ASP.Models
                     _dbContext.billing.Add(bill);
                 });
             }
+            else
+            {
+                _dbContext.accountStatus.Add(accountStatus);
+            }
 
             _dbContext.SaveChanges();
         }
@@ -109,6 +113,10 @@ namespace AYUS_RestAPI.ASP.Models
         {
             PersonalInformation? personalInformation = _dbContext.personalInformation.FirstOrDefault(p => p.UUID == uuid);
             if (personalInformation == null)
+            {
+                return null;
+            }
+            if(personalInformation.UUID != uuid)
             {
                 return null;
             }
@@ -232,24 +240,27 @@ namespace AYUS_RestAPI.ASP.Models
             {
                 Credential credential = _dbContext.credential.First(c => c.UUID == personal.UUID);
                 Wallet wallet = _dbContext.wallets.First(w => w.UUID == personal.UUID);
-                AccountStatus accountStatus = _dbContext.accountStatus.First(a => a.UUID == personal.UUID);
+                AccountStatus? accountStatus = _dbContext.accountStatus.FirstOrDefault(a => a.UUID == personal.UUID);
 
-                if (accountStatus.GetRole == Enumerations.Roles.MECHANIC)
+                if(accountStatus != null)
                 {
-
-                    Shop shop = _dbContext.shops.First(s => s.ShopID == accountStatus.ShopID);
-                    List<ServiceOffer> serviceOffer = _dbContext.serviceOffers.Where(so => so.ShopID == shop.ShopID).ToList();
-                    serviceOffer.ForEach(offer =>
+                    if (accountStatus.GetRole == Enumerations.Roles.MECHANIC)
                     {
-                        offer.SetService(_dbContext.services.First(service => service.ServiceID == offer.ServiceID));
-                    });
-                    _dbContext.billing.Where(bill => bill.ShopID == shop.ShopID).ToList().ForEach(
-                        bill => shop.Billings.Add(bill)
-                    );
 
-                    accountStatus.SetShop(shop);
+                        Shop shop = _dbContext.shops.First(s => s.ShopID == accountStatus.ShopID);
+                        List<ServiceOffer> serviceOffer = _dbContext.serviceOffers.Where(so => so.ShopID == shop.ShopID).ToList();
+                        serviceOffer.ForEach(offer =>
+                        {
+                            offer.SetService(_dbContext.services.First(service => service.ServiceID == offer.ServiceID));
+                        });
+                        _dbContext.billing.Where(bill => bill.ShopID == shop.ShopID).ToList().ForEach(
+                            bill => shop.Billings.Add(bill)
+                        );
+
+                        accountStatus.SetShop(shop);
+                    }
                 }
-                users.Add(new User(personal, credential, wallet, accountStatus, new List<Vehicle>()));
+                users.Add(new User(personal, credential, wallet, accountStatus??new(), new List<Vehicle>()));
             }
 
             return users;

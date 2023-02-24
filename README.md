@@ -322,11 +322,11 @@ fetch("https://localhost:7172/api/Mechanic/Shop", {
 ## Service Offer [What services does the shop offer?]
 ### Add ServiceOffer to the Mechanic Shop
 ```JavaScript
-fetch("https://localhost:7172/api/Mechanic/Shop", {
+fetch("https://localhost:7172/api/Mechanic/ServiceOffer", {
 	method: "POST",
 	headers:{
 		"AYUS-API-KEY":"XXXXXXXX",
-		"MechanicUUID": "XXXXX", // [REQUIRED]
+		"MechanicUUID": "XXXXX", // [REQUIRED] <- personalInfo.UUID not the Shop.ShopID
 		"Content-Type": "application/json"
 	},
 	body:{
@@ -339,7 +339,7 @@ fetch("https://localhost:7172/api/Mechanic/Shop", {
 
 ### Get ServiceOffer from the Mechanic Shop [ARRAY]
 ```JavaScript
-fetch("https://localhost:7172/api/Mechanic/Shop", {
+fetch("https://localhost:7172/api/Mechanic/ServiceOffer", {
 	method: "POST",
 	headers:{
 		"AYUS-API-KEY":"XXXXXXXX",
@@ -351,7 +351,7 @@ fetch("https://localhost:7172/api/Mechanic/Shop", {
 
 ### Delete ServiceOffer from the Mechanic Shop
 ```JavaScript
-fetch("https://localhost:7172/api/Mechanic/Shop", {
+fetch("https://localhost:7172/api/Mechanic/ServiceOffer", {
 	method: "DELETE",
 	headers:{
 		"AYUS-API-KEY":"XXXXXXXX",
