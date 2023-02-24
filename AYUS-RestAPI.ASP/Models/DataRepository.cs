@@ -25,12 +25,14 @@ namespace AYUS_RestAPI.ASP.Models
             _dbContext.personalInformation.Add(personalInformation);
             _dbContext.credential.Add(credential);
             _dbContext.wallets.Add(wallet);
-            _dbContext.accountStatus.Add(accountStatus);
+            
             vehicles.ForEach( vehicle => { _dbContext.vehicles.Add(vehicle); });
 
             if (accountStatus.GetRole == Enumerations.Roles.MECHANIC){
                 Shop shop = accountStatus.GetShop();
                 shop.ShopID = Guid.NewGuid().ToString();
+                accountStatus.ShopID = shop.ShopID;
+                _dbContext.accountStatus.Add(accountStatus);
 
                 _dbContext.shops.Add(shop);
                 shop.ServiceOffers.ForEach(offer => {
