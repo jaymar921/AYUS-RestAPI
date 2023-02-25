@@ -34,11 +34,12 @@ fetch("https://localhost:7172/api/Account", {
 })
 ```
 
+POST and PUT for Clients/Mechanic/Admin's data, for Mechanic, the "Shop" should not be null. In order to update, do [/api/Mechanic/Shop](#get-the-mechanic-shop)
 ```JavaScript
 // POST/PUT body for Clients/Mechanics/Admins
 {
     "personalInformation": {
-		"uuid": String, // specify ONLY on 'PUT' method
+        "uuid": String, // specify ONLY on 'PUT' method
         "Firstname": String,
         "Lastname": String,
         "Contact": String,
@@ -57,7 +58,7 @@ fetch("https://localhost:7172/api/Account", {
         "Pincode": String
     },
     "accountStatus": {
-        "Shop": {   // SET SHOP = 'null' if not MECHANIC, this is fixed, to update, do [/api/Mechanic/Shop]
+        "Shop": {   // SET SHOP = 'null' if not MECHANIC, this is fixed, to update, do [/api/Mechanic/Shop]()
             "ShopName": String,
             "ShopDescription": String
         },
@@ -321,12 +322,13 @@ fetch("https://localhost:7172/api/Mechanic/Shop", {
 
 ## Service Offer [What services does the shop offer?]
 ### Add ServiceOffer to the Mechanic Shop
+> Note: You have to know the service ID first before adding a service offer. See [Get Service](#get-services-array)
 ```JavaScript
 fetch("https://localhost:7172/api/Mechanic/ServiceOffer", {
 	method: "POST",
 	headers:{
 		"AYUS-API-KEY":"XXXXXXXX",
-		"MechanicUUID": "XXXXX", // [REQUIRED]
+		"MechanicUUID": "XXXXX", // [REQUIRED] <- personalInfo.UUID not the Shop.ShopID
 		"Content-Type": "application/json"
 	},
 	body:{
@@ -343,7 +345,7 @@ fetch("https://localhost:7172/api/Mechanic/ServiceOffer", {
 	method: "POST",
 	headers:{
 		"AYUS-API-KEY":"XXXXXXXX",
-		"MechanicUUID": "XXXXX", // [REQUIRED] 
+		"MechanicUUID": "XXXXX", // [REQUIRED]
 	}
 })
 ```
@@ -355,7 +357,7 @@ fetch("https://localhost:7172/api/Mechanic/ServiceOffer", {
 	method: "DELETE",
 	headers:{
 		"AYUS-API-KEY":"XXXXXXXX",
-		"MechanicUUID": "XXXXX", // [REQUIRED] 
+		"MechanicUUID": "XXXXX", // [REQUIRED]
 		"ServiceOfferUUID": "XXXXXX" // [REQUIRED]
 	}
 })
@@ -369,7 +371,7 @@ fetch("https://localhost:7172/api/ServiceRequest", {
 	headers:{
 		"AYUS-API-KEY":"XXXXXXXX",
 		"MechanicUUID": "XXXXX", // [REQUIRED]
-		"ServiceRequestUUID": "XXXXXX" // *optiona;*
+		"ServiceRequestUUID": "XXXXXX" // *optional*
 	}
 })
 ```
@@ -397,6 +399,7 @@ fetch("https://localhost:7172/api/ServiceRequest", {
 ```
 
 ### Delete a service request
+> Before deleting, you must get the ServiceRequest data and store it in the SessionDetails [Only if the mechanic accepts the offer]
 ```JavaScript
 fetch("https://localhost:7172/api/ServiceRequest", {
 	method: "DELETE",
