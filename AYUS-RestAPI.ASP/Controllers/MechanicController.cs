@@ -144,7 +144,7 @@ namespace AYUS_RestAPI.ASP.Controllers
 
             ServiceOffer serviceOffer = new ServiceOffer
             {
-                ServiceID = model.ServiceID,
+                ServiceID = service.ServiceID,
                 ServiceExpertise = model.ServiceExpertise,
                 ShopID = shop.ShopID,
                 Price = model.Price
@@ -192,10 +192,23 @@ namespace AYUS_RestAPI.ASP.Controllers
             if (shop == null)
                 return Json(new { Status = 404, Message = "Shop data was not found" }, options);
 
-            
+            List<Object> list = new List<Object>();
+
+            shop.ServiceOffers.ForEach(serviceOffered =>
+            {
+                list.Add(new
+                {
+                    serviceOffered.UUID,
+                    serviceOffered.ShopID,
+                    serviceOffered.Price,
+                    serviceOffered.ServiceExpertise,
+                    serviceOffered.ServiceID,
+                    serviceOffered.GetService().ServiceName
+                });
+            });
 
 
-            return Json(new { Status = 200, Message = $"List of service offered from shop '{shop.ShopName}', see info for more details", Info = shop.ServiceOffers }, options);
+            return Json(new { Status = 200, Message = $"List of service offered from shop '{shop.ShopName}', see info for more details", Info = list }, options);
         }
 
         [HttpDelete]

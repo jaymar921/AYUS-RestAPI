@@ -131,7 +131,11 @@ namespace AYUS_RestAPI.ASP.Models
                 List<ServiceOffer> serviceOffer = _dbContext.serviceOffers.Where( so => so.ShopID == shop.ShopID).ToList();
                 serviceOffer.ForEach(offer =>
                 {
-                    offer.SetService(_dbContext.services.First(service => service.ServiceID == offer.ServiceID));
+                    var _offer = _dbContext.services.FirstOrDefault(service => service.ServiceID == offer.ServiceID);
+                    if (_offer != null)
+                    {
+                        offer.SetService(_offer);
+                    }
                 });
                 _dbContext.billing.Where(bill => bill.ShopID == shop.ShopID).ToList().ForEach(
                     bill => shop.Billings.Add(bill)
@@ -159,7 +163,11 @@ namespace AYUS_RestAPI.ASP.Models
                 List<ServiceOffer> serviceOffer = _dbContext.serviceOffers.Where(so => so.ShopID == shop.ShopID).ToList();
                 serviceOffer.ForEach(offer =>
                 {
-                    offer.SetService(_dbContext.services.First(service => service.ServiceID == offer.ServiceID));
+                    var _offer = _dbContext.services.FirstOrDefault(service => service.ServiceID == offer.ServiceID);
+                    if (_offer != null)
+                    {
+                        offer.SetService(_offer);
+                    }
                 });
                 _dbContext.billing.Where(bill => bill.ShopID == shop.ShopID).ToList().ForEach(
                     bill => shop.Billings.Add(bill)
@@ -187,7 +195,11 @@ namespace AYUS_RestAPI.ASP.Models
                 List<ServiceOffer> serviceOffer = _dbContext.serviceOffers.Where(so => so.ShopID == shop.ShopID).ToList();
                 serviceOffer.ForEach(offer =>
                 {
-                    offer.SetService(_dbContext.services.First(service => service.ServiceID == offer.ServiceID));
+                    var _offer = _dbContext.services.FirstOrDefault(service => service.ServiceID == offer.ServiceID);
+                    if (_offer != null)
+                    {
+                        offer.SetService(_offer);
+                    }
                 });
                 _dbContext.billing.Where(bill => bill.ShopID == shop.ShopID).ToList().ForEach(
                     bill => shop.Billings.Add(bill)
@@ -215,7 +227,11 @@ namespace AYUS_RestAPI.ASP.Models
                 List<ServiceOffer> serviceOffer = _dbContext.serviceOffers.Where(so => so.ShopID == shop.ShopID).ToList();
                 serviceOffer.ForEach(offer =>
                 {
-                    offer.SetService(_dbContext.services.First(service => service.ServiceID == offer.ServiceID));
+                    var _offer = _dbContext.services.FirstOrDefault(service => service.ServiceID == offer.ServiceID);
+                    if (_offer != null)
+                    {
+                        offer.SetService(_offer);
+                    }
                 });
                 _dbContext.billing.Where(bill => bill.ShopID == shop.ShopID).ToList().ForEach(
                     bill => shop.Billings.Add(bill)
@@ -251,7 +267,11 @@ namespace AYUS_RestAPI.ASP.Models
                         List<ServiceOffer> serviceOffer = _dbContext.serviceOffers.Where(so => so.ShopID == shop.ShopID).ToList();
                         serviceOffer.ForEach(offer =>
                         {
-                            offer.SetService(_dbContext.services.First(service => service.ServiceID == offer.ServiceID));
+                            var _offer = _dbContext.services.FirstOrDefault(service => service.ServiceID == offer.ServiceID);
+                            if(_offer != null )
+                            {
+                                offer.SetService(_offer);
+                            }
                         });
                         _dbContext.billing.Where(bill => bill.ShopID == shop.ShopID).ToList().ForEach(
                             bill => shop.Billings.Add(bill)
