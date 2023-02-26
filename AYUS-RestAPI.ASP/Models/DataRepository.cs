@@ -138,7 +138,14 @@ namespace AYUS_RestAPI.ASP.Models
                     }
                 });
                 _dbContext.billing.Where(bill => bill.ShopID == shop.ShopID).ToList().ForEach(
-                    bill => shop.Billings.Add(bill)
+                    bill =>
+                    {
+                        var _bill = _dbContext.billing.FirstOrDefault(b => b.BillingID == bill.BillingID);
+                        if(_bill != null)
+                        {
+                            shop.Billings.Add(_bill);
+                        }
+                    }
                 );
                 
                 accountStatus.SetShop(shop);
@@ -565,6 +572,23 @@ namespace AYUS_RestAPI.ASP.Models
         {
             _dbContext.serviceMaps.Remove(serviceMap);
             _dbContext.SaveChanges();
+        }
+
+
+        public void AddBilling(Billing billing)
+        {
+            _dbContext.billing.Add(billing);
+            _dbContext.SaveChanges();
+        }
+
+        public List<Billing> GetAllBilling()
+        {
+            return _dbContext.billing.ToList();
+        }
+
+        public List<Billing> GetAllBillings(string shopID)
+        {
+            return _dbContext.billing.Where(b => b.ShopID == shopID).ToList();
         }
 
         

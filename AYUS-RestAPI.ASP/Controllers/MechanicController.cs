@@ -52,6 +52,13 @@ namespace AYUS_RestAPI.ASP.Controllers
             }
 
             Shop? shop = dataRepository.GetShop(user.AccountStatus.ShopID);
+            if (shop != null)
+            {
+                shop.Billings.Clear();
+                dataRepository.GetAllBillings(shop.ShopID).ForEach( bill => shop.Billings.Add(bill));
+                shop.ServiceOffers.Clear();
+                dataRepository.GetAllServiceOffers(shop.ShopID).ForEach(serviceOffer => shop.ServiceOffers.Add(serviceOffer));
+            }
 
             return Json(new { Status = 200, Message = "Shop data was found", Shop=shop }, options);
         }
@@ -265,6 +272,79 @@ namespace AYUS_RestAPI.ASP.Controllers
 
 
             return Json(new { Status = 200, Message = $"Removed Service offer successfully", Info = shop.ServiceOffers }, options);
+        }
+
+        [HttpPost]
+        [Route("Billing")]
+        public JsonResult PostBilling(BillingModel model)
+        {
+            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
+            {
+                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
+            }
+
+            if (apiKey != API_KEY)
+            {
+                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied" }, options);
+            }
+
+            Shop? shop = dataRepository.GetShop(model.ShopID);
+
+            if(shop == null)
+            {
+                return Json(new { Status = 404, Message = "Shop data was not found!" }, options);
+            }
+
+            if (shop.ShopName == string.Empty)
+            {
+                return Json(new { Status = 404, Message = "Shop data was not found!" }, options);
+            }
+
+            Billing billing = new Billing
+            {
+                ShopID = model.ShopID,
+                ServiceFee = model.ServiceFee,
+                ServiceRemark = model.ServiceRemark,
+            };
+            dataRepository.AddBilling(billing);
+
+            return Json(new { Status = 201, Message = "Billing was created, see info for details", Info=billing }, options);
+        }
+
+        [HttpGet]
+        [Route("Billing")]
+        public JsonResult GetBilling()
+        {
+            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
+            {
+                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
+            }
+
+            if (apiKey != API_KEY)
+            {
+                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied" }, options);
+            }
+
+            if (!Request.Headers.TryGetValue("ShopID", out var shopID))
+            {
+                return Json(new { Status = 401, Message = "Please specify the ShopID at the header of the request" }, options);
+            }
+
+            Shop? shop = dataRepository.GetShop(shopID.ToString());
+
+            if (shop == null)
+            {
+                return Json(new { Status = 404, Message = "Shop data was not found!" }, options);
+            }
+
+            if (shop.ShopName == string.Empty)
+            {
+                return Json(new { Status = 404, Message = "Shop data was not found!" }, options);
+            }
+
+            List<Billing> BillingData = dataRepository.GetAllBillings(shopID.ToString());
+
+            return Json(new { Status = 200, Message = "Billing information found from shop provided", BillingData }, options);
         }
     }
 }

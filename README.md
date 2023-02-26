@@ -1,4 +1,3 @@
-# API DOCUMENTATION
 # AYUS API DOCUMENTATION
 ### Prepared by Jayharron Mar Abejar
 > Used for frontend and backend interaction. The front-end system was built on a different framework [React for Client/Mechanic]() and [ASP for Admin](), this system is build for backend operation.
@@ -278,6 +277,16 @@ fetch("https://localhost:7172/api/Wallet?uuid=XXXXX", {
 		"AYUS-API-KEY":"XXXXXXXX",
 	}
 })
+
+// OUTPUT IF [SUCCESS]
+{
+    "Status": 200,
+    "Message": "Wallet of 'user' was found",
+    "WalletData": {
+        "Balance": Number,
+        "Pincode": "string"
+    }
+}
 ```
 
 ### Update user wallet
@@ -393,7 +402,7 @@ fetch("https://localhost:7172/api/ServiceRequest", {
 		"vehicle": String,
 		"service": String,
 		"description": String,
-		"picture": null
+		"picture": null // this will be an object in the backend
 	}
 })
 ```
@@ -408,4 +417,50 @@ fetch("https://localhost:7172/api/ServiceRequest", {
 		"ServiceRequestUUID": "XXXXXX" // [REQUIRED]
 	}
 })
+```
+
+# Billing [Mechanic]
+> After a successful session, a billing should follow from where it deducts the balance from the mechanic's wallet. The mechanic cannot be available to serve if the [wallet's](#wallet) balance is less than the service rate.
+### Saving a billing information
+```JavaScript
+fetch("https://localhost:7172/api/Mechanic/Billing", {
+	method: "POST",
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX",
+		"ShopID": "XXXXXX", // [REQUIRED]
+		"Content-Type": "application/json"
+	},
+	body: {
+		{
+			"shopID": "string",
+			"serviceFee": 0,
+			"serviceRemark": "string"
+		}
+	}
+})
+```
+### Retrieving a billing information
+```JavaScript
+fetch("https://localhost:7172/api/Mechanic/Billing", {
+	method: "GET",
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX",
+		"ShopID": "XXXXXX" // [REQUIRED]
+	}
+})
+
+// OUTPUT IF [SUCCESS]
+{
+	"Status": 200,
+    "Message": "Billing information found from shop provided",
+    "BillingData": [
+        {
+            "BillingID": "string",
+            "ShopID": "string",
+            "BillingDate": "string",
+            "ServiceFee": Number,
+            "ServiceRemark": "string"
+        }
+    ]
+}
 ```
