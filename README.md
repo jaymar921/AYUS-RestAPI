@@ -90,6 +90,7 @@ fetch("https://localhost:7172/api/Account", {
 
 # Session
 ### Register a session
+> Registering a session will remove a mechanic from [Available Sessions](#get-an-available-mechanic). It will also create a MapLocation Service. You can [Update](#update-a-maplocation) or [Retrieve](#get-a-maplocation) a map service data.
 ```JavaScript
 fetch("https://localhost:7172/api/Sessions/RegisterSession", {
 	method: "POST",
@@ -101,10 +102,19 @@ fetch("https://localhost:7172/api/Sessions/RegisterSession", {
 	}
 })
 ```
-
-
+### Get an available mechanic
+> Note: This will ony show mechanics that are not in session, make sure that if a mechanic is in session, you must call EndSession to make it available.
+```JavaScript
+fetch("https://localhost:7172/api/Sessions/AvailableMechanics", {
+	method: "GET",
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX"
+	} 
+})
+```
 
 ### Get a session
+> If you want to know more about the session, you can retrieve the data using this API link
 ```JavaScript
 fetch("https://localhost:7172/api/Sessions/GetSession", {
 	method: "GET",
@@ -117,13 +127,30 @@ fetch("https://localhost:7172/api/Sessions/GetSession", {
 })
 ```
 
-
-### Get an available mechanic
+### Get a MapLocation
+> For each session created, a new MapLocation service is also created with it. You must know the SessionID to retrieve it's data.
 ```JavaScript
-fetch("https://localhost:7172/api/Sessions/AvailableMechanics", {
+fetch("https://localhost:7172/api/Sessions/MapLocation", {
 	method: "GET",
 	headers:{
-		"AYUS-API-KEY":"XXXXXXXX"
+		"AYUS-API-KEY":"XXXXXXXX",
+		"SessionID": "XXXXX" // [REQUIRED]
+	} 
+})
+```
+
+### Update a MapLocation
+> When updating a MapLocation, there will be two devices involved and you cannot get the location of both at once. If you can track the client's location, then only update the client's location, otherwise do the same to the mechanic.
+```JavaScript
+fetch("https://localhost:7172/api/Sessions/MapLocation", {
+	method: "GET",
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX",
+		"SessionID": "XXXXX", // [REQUIRED]
+		"ClientLocLat": Number, // Must come with Lon *Optional if only updating mechanic's location*
+		"ClientLocLon": Number, // Must come with Lat *Optional if only updating mechanic's location*
+		"MechanicLocLat": Number, // Must come with Lon *Optional if only updating client's location*
+		"MechanicLocLon": Number, // Must come with Lat *Optional if only updating client's location*
 	} 
 })
 ```
@@ -391,8 +418,6 @@ fetch("https://localhost:7172/api/ServiceRequest", {
 	method: "POST",
 	headers:{
 		"AYUS-API-KEY":"XXXXXXXX",
-		"MechanicUUID": "XXXXX", // [REQUIRED]
-		"ServiceRequestUUID": "XXXXXX" // *optional*
 	},
 	body: {
 		"requestor": String, // CLIENT UUID
@@ -452,15 +477,26 @@ fetch("https://localhost:7172/api/Mechanic/Billing", {
 // OUTPUT IF [SUCCESS]
 {
 	"Status": 200,
-    "Message": "Billing information found from shop provided",
-    "BillingData": [
-        {
-            "BillingID": "string",
-            "ShopID": "string",
-            "BillingDate": "string",
-            "ServiceFee": Number,
-            "ServiceRemark": "string"
-        }
-    ]
+	"Message": "Billing information found from shop provided",
+	"BillingData": [
+		{
+			"BillingID": "string",
+			"ShopID": "string",
+			"BillingDate": "string",
+			"ServiceFee": Number,
+			"ServiceRemark": "string"
+		}
+	]
 }
 ```
+### Deleting a billing information
+```JavaScript
+fetch("https://localhost:7172/api/Mechanic/Billing", {
+	method: "GET",
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX",
+		"BillingID": "XXXXXX" // [REQUIRED]
+	}
+})
+```
+
