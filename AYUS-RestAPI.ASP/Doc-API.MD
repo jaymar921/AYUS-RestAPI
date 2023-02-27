@@ -418,6 +418,7 @@ fetch("https://localhost:7172/api/ServiceRequest", {
 	method: "POST",
 	headers:{
 		"AYUS-API-KEY":"XXXXXXXX",
+		"Content-Type": "application/json"
 	},
 	body: {
 		"requestor": String, // CLIENT UUID
@@ -496,6 +497,47 @@ fetch("https://localhost:7172/api/Mechanic/Billing", {
 	headers:{
 		"AYUS-API-KEY":"XXXXXXXX",
 		"BillingID": "XXXXXX" // [REQUIRED]
+	}
+})
+```
+# Temporary Data Route
+### Get-MapLocation
+> Note that this is not stored in the database, for temporary call only. To save the location, use [Session](#session) instead
+```JavaScript
+fetch("https://localhost:7172/api/TemporaryRoute/MapLocation", {
+	method: "GET",
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX",
+		"UUID": "XXXXXX" // [REQUIRED]
+	}
+})
+
+// Returns [If data found]
+{
+    "Status": 200,
+    "Message": "Found data from the UUID specified",
+    "Data": {
+        "UUID": "XXXXXXX",
+        "Latitude": Number,
+        "Longitude": Number,
+        "AdditionData": "string"
+    }
+}
+```
+
+###  Post/Put-MapLocation
+> Note that this is not stored in the database, for temporary call only. To save the location, use [Session](#session) instead
+```JavaScript
+fetch("https://localhost:7172/api/TemporaryRoute/MapLocation", {
+	method: "POST", // use 'PUT' method when updating
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX",
+	}, 
+	body: {
+		"uuid": "string", // any UUID as long as you can access it.
+		"latitude": 0,
+		"longitude": 0,
+		"additionData": "string"	
 	}
 })
 ```

@@ -346,5 +346,39 @@ namespace AYUS_RestAPI.ASP.Controllers
 
             return Json(new { Status = 200, Message = "Billing information found from shop provided", BillingData }, options);
         }
+
+
+        [HttpDelete]
+        [Route("Billing")]
+        public JsonResult DeleteBilling()
+        {
+            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
+            {
+                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
+            }
+
+            if (apiKey != API_KEY)
+            {
+                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied" }, options);
+            }
+
+            if (!Request.Headers.TryGetValue("BillingID", out var billingID))
+            {
+                return Json(new { Status = 401, Message = "Please specify the BillingID at the header of the request" }, options);
+            }
+
+            Billing? billing = dataRepository.GetBilling(billingID.ToString());
+            if(billing == null)
+            {
+                return Json(new { Status = 404, Message = "Billing information not found"}, options);
+            }
+
+            if(billing.ShopID == string.Empty)
+                return Json(new { Status = 404, Message = "Billing information not found" }, options);
+
+            dataRepository.DeleteBilling(billing);
+
+            return Json(new { Status = 200, Message = "Deleted Billing information, see info for details", Info=billing }, options);
+        }
     }
 }

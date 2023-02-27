@@ -22,7 +22,14 @@ builder.Services.AddSingleton<TempDataRepository>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(config =>
+{
+    config.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "AYUS API - V1",
+        Version = "v1"
+    });
+});
 
 var app = builder.Build();
 

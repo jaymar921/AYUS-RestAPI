@@ -581,7 +581,12 @@ namespace AYUS_RestAPI.ASP.Models
             _dbContext.SaveChanges();
         }
 
-        public List<Billing> GetAllBilling()
+        public Billing? GetBilling(string id)
+        {
+            return _dbContext.billing.FirstOrDefault(b => b.BillingID == id);
+        }
+
+        public List<Billing> GetAllBillings()
         {
             return _dbContext.billing.ToList();
         }
@@ -589,6 +594,12 @@ namespace AYUS_RestAPI.ASP.Models
         public List<Billing> GetAllBillings(string shopID)
         {
             return _dbContext.billing.Where(b => b.ShopID == shopID).ToList();
+        }
+
+        public void DeleteBilling(Billing billing)
+        {
+            _dbContext.billing.Remove(billing);
+            _dbContext.SaveChanges();
         }
 
         

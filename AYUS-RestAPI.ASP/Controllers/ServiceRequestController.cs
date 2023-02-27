@@ -61,7 +61,7 @@ namespace AYUS_RestAPI.ASP.Controllers
 
 
         [HttpPost]
-        public JsonResult PostRequest(ServiceRequest serviceRequest)
+        public JsonResult PostRequest([FromBody] ServiceRequestModel model)
         {
             if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
             {
@@ -72,10 +72,7 @@ namespace AYUS_RestAPI.ASP.Controllers
             {
                 return Json(new { Status = 401, Message = "Invalid API Key, Access Denied" }, options);
             }
-
-
-
-            User? user = dataRepository.GetUser(serviceRequest.Recepient);
+            User? user = dataRepository.GetUser(model.Recepient);
 
             if (user == null)
             {
@@ -87,18 +84,19 @@ namespace AYUS_RestAPI.ASP.Controllers
                 return Json(new { Status = 400, Message = "Recepient is found but the role is not a Mechanic" }, options);
             }
 
-            if(dataRepository.GetUser(serviceRequest.Requestor) == null)
+            if(dataRepository.GetUser(model.Requestor) == null)
             {
                 return Json(new { Status = 404, Message = "No data found from Requestor specified" }, options);
             }
-
-            tempDataRepository.GetServiceRequests().Add(serviceRequest);
+            ServiceRequest request = ServiceRequest.parse(model);
+            tempDataRepository.GetServiceRequests().Add(request);
             
 
             return Json(new
             {
                 Status = 201,
-                Message = $"A request has been saved for mechanic '{user.Credential.Username}'"
+                Message = $"A request has been saved for mechanic '{user.Credential.Username}'",
+                Info = request
             }, options);
         }
 

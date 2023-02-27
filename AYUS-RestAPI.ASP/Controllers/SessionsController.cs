@@ -136,6 +136,10 @@ namespace AYUS_RestAPI.ASP.Controllers
             };
 
             dataRepository.AddSession(session);
+            dataRepository.AddMapLocation(new ServiceMapLocationAPI
+            {
+                SessionID = session.SessionID,
+            });
             
             return Json(new { Status = 201, Message = "Session Registered", session.SessionID }, options);
         }
@@ -240,6 +244,82 @@ namespace AYUS_RestAPI.ASP.Controllers
 
             // return not found if no session was found 
             return Json(new { Status = 404, Message = "No session found" }, options);
+        }
+
+        [HttpPut]
+        [Route("MapLocation")]
+        public JsonResult PutMapLocation()
+        {
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
+            {
+                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
+            }
+
+            if (apiKey != API_KEY)
+            {
+                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied" }, options);
+            }
+
+            if(!Request.Headers.TryGetValue("SessionID", out var sessionID))
+            {
+                return Json(new { Status = 401, Message = "Please specify the SessionID at the header of the request" }, options);
+            }
+            Request.Headers.TryGetValue("ClientLocLon", out var clientLocLon);
+            Request.Headers.TryGetValue("ClientLocLat", out var clientLocLat);
+            Request.Headers.TryGetValue("MechanicLocLat", out var mechanicLocLat);
+            Request.Headers.TryGetValue("MechanicLocLon", out var mechanicLocLon);
+
+            ServiceMapLocationAPI? mapLoc = dataRepository.GetMapLocation(sessionID.ToString());
+            if(mapLoc == null)
+            {
+                return Json(new { Status = 404, Message = "MapLocation service not found from ID specified" }, options);
+            }
+
+            try
+            {
+                mapLoc.ClientLocLat = Convert.ToDouble(clientLocLat.ToString());
+                mapLoc.ClientLocLon = Convert.ToDouble(clientLocLon.ToString());
+            }
+            catch (Exception) { }
+
+            try
+            {
+                mapLoc.MechanicLocLat = Convert.ToDouble(mechanicLocLat.ToString());
+                mapLoc.MechanicLocLon = Convert.ToDouble(mechanicLocLon.ToString());
+            }
+            catch (Exception) { }
+            dataRepository.UpdateMapLocation(mapLoc);
+
+
+            return Json(new { Status = 201, Message = "Map location was updated" }, options);
+        }
+
+        [HttpGet]
+        [Route("MapLocation")]
+        public JsonResult GetMapLocation()
+        {
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
+            {
+                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
+            }
+
+            if (apiKey != API_KEY)
+            {
+                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied" }, options);
+            }
+
+            if (!Request.Headers.TryGetValue("SessionID", out var sessionID))
+            {
+                return Json(new { Status = 401, Message = "Please specify the SessionID at the header of the request" }, options);
+            }
+
+            ServiceMapLocationAPI? mapLoc = dataRepository.GetMapLocation(sessionID.ToString());
+            if (mapLoc == null) return Json(new { Status = 404, Message = "MapLocation service not found from ID specified" }, options);
+
+
+            return Json(new { Status = 201, Message = "Retrieved MapLocation service", Data = new { mapLoc.MechanicLocLat, mapLoc.MechanicLocLon, mapLoc.ClientLocLat, mapLoc.ClientLocLon } }, options);
         }
     }
 }
