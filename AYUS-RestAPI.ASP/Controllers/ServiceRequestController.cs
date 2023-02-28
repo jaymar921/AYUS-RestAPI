@@ -53,7 +53,23 @@ namespace AYUS_RestAPI.ASP.Controllers
             {
                 return Json(new { Status = 400, Message = "User is found but the role is not a Mechanic" }, options);
             }
-            List<ServiceRequest> requests = tempDataRepository.GetServiceRequests().Where(s => s.Recepient == mechanicUUID.ToString() || s.RequestID == serviceRequestUUID.ToString()).ToList();
+
+            List<object> requests = new List<object>();
+            tempDataRepository.GetServiceRequests().Where(s => s.Recepient == mechanicUUID.ToString() || s.RequestID == serviceRequestUUID.ToString()).ToList().ForEach(
+                req => {
+                    requests.Add(new {
+                        req.RequestID,
+                        req.Requestor,
+                        req.Recepient,
+                        req.Contact,
+                        req.Location,
+                        req.Service,
+                        req.Description,
+                        req.Picture,
+                        dataRepository.GetService(req.Service)?.ServiceName
+                    });
+            });
+            
 
             return Json(new { Status = 200, Message = $"Services found for mechanic '{user.Credential.Username}'", ServiceRequests = requests
             }, options);
