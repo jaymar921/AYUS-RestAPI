@@ -12,6 +12,8 @@
         public string Service { get; set; } = string.Empty;
         public string? Description { get; set; } = string.Empty;
         public object? Picture { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public string NewStatus { get; set; } = string.Empty;
 
         public static ServiceRequest parse(ServiceRequestModel model)
         {
@@ -25,6 +27,8 @@
                 Service = model.Service,
                 Description = model.Description,
                 Picture = model.Picture,
+                Status = model.Status,
+                NewStatus = model.NewStatus,
             };
         }
 
@@ -41,8 +45,10 @@
         public string Service { get; set; } = string.Empty;
         public string? Description { get; set; } = string.Empty;
         public object? Picture { get; set; } = null;
+        public string Status { get; set; } = "Requesting"; 
+        public string NewStatus { get; set; } = "Requesting";
 
-        
+
 
     }
 }

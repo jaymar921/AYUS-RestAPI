@@ -36,23 +36,24 @@ namespace AYUS_RestAPI.ASP.Controllers
                 return Json(new { Status = 401, Message = "Invalid API Key, Access Denied" }, options);
             }
 
-            if (!Request.Headers.TryGetValue("MechanicUUID", out var mechanicUUID))
-            {
-                return Json(new { Status = 401, Message = "Please specify the MechanicUUID at the header of the request" }, options);
-            }
+            Request.Headers.TryGetValue("MechanicUUID", out var mechanicUUID);
+           
+
+            Request.Headers.TryGetValue("ClientUUID", out var clientUUID);
+            
 
             Request.Headers.TryGetValue("ServiceRequestUUID", out var serviceRequestUUID);
-            User? user = dataRepository.GetUser(mechanicUUID.ToString());
+            User? user = dataRepository.GetUser(mechanicUUID.ToString()) ?? dataRepository.GetUser(clientUUID.ToString());
 
-            if (user == null)
-            {
-                return Json(new { Status = 404, Message = "No data found from MechanicUUID specified" }, options);
-            }
+            //if (user == null)
+            //{
+            //    return Json(new { Status = 404, Message = "No data found from MechanicUUID specified" }, options);
+            //}
 
-            if (!user.AccountStatus.GetRole.Equals(Roles.MECHANIC))
-            {
-                return Json(new { Status = 400, Message = "User is found but the role is not a Mechanic" }, options);
-            }
+            //if (!user.AccountStatus.GetRole.Equals(Roles.MECHANIC))
+            //{
+            //    return Json(new { Status = 400, Message = "User is found but the role is not a Mechanic" }, options);
+            //}
 
             List<object> requests = new List<object>();
             tempDataRepository.GetServiceRequests().Where(s => s.Recepient == mechanicUUID.ToString() || s.RequestID == serviceRequestUUID.ToString()).ToList().ForEach(
@@ -62,21 +63,24 @@ namespace AYUS_RestAPI.ASP.Controllers
                         req.Requestor,
                         req.Recepient,
                         req.Contact,
+                        FullName =  dataRepository.GetUser(req.Requestor)?.PersonalInformation.Firstname+ " " + dataRepository.GetUser(req.Requestor)?.PersonalInformation.Lastname,
                         req.Location,
                         req.Service,
                         req.Description,
                         req.Picture,
-                        dataRepository.GetService(req.Service)?.ServiceName
+                        req.Vehicle,
+                        dataRepository.GetService(req.Service)?.ServiceName,
+                        req.Status
                     });
             });
             
 
-            return Json(new { Status = 200, Message = $"Services found for mechanic '{user.Credential.Username}'", ServiceRequests = requests
+            return Json(new { Status = 200, Message = $"Services found for mechanic", ServiceRequests = requests
             }, options);
         }
 
 
-        [HttpPost]
+        [HttpPost, HttpPut]
         public JsonResult PostRequest([FromBody] ServiceRequestModel model)
         {
             if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
@@ -105,8 +109,24 @@ namespace AYUS_RestAPI.ASP.Controllers
                 return Json(new { Status = 404, Message = "No data found from Requestor specified" }, options);
             }
             ServiceRequest request = ServiceRequest.parse(model);
-            tempDataRepository.GetServiceRequests().Add(request);
+
+            ServiceRequest? requestFound = tempDataRepository.GetServiceRequests().FirstOrDefault(r => r.Recepient == request.Recepient && r.Requestor == request.Requestor && request.Status.ToLower() != "declined");
             
+            if(requestFound != null)
+            {
+                requestFound.Status = request.NewStatus;
+
+                return Json(new
+                {
+                    Status = 200,
+                    Message = $"A request has been found for '{user.Credential.Username}'",
+                    Info = requestFound
+                }, options);
+            }
+                
+            
+                
+            tempDataRepository.GetServiceRequests().Add(request);
 
             return Json(new
             {
