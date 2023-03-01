@@ -90,15 +90,32 @@ fetch("https://localhost:7172/api/Account", {
 
 # Session
 ### Register a session
-> Registering a session will remove a mechanic from [Available Sessions](#get-an-available-mechanic). It will also create a MapLocation Service. You can [Update](#update-a-maplocation) or [Retrieve](#get-a-maplocation) a map service data.
+> Registering a session will remove a mechanic from [Available Sessions](#get-an-available-mechanic). It will also create a MapLocation Service. You can [Update](#update-a-maplocation) or [Retrieve](#get-a-maplocation) a map service data. A [Flag](#update-a-flag) is also created after registering a session.
+
+<br>
+
+> The MapLocation data is auto filled with [TemporaryMapLocation](#get-maplocation) if the values exists but it will not update overtime, you must call an [[Update]MapLocation](#update-a-maplocation).
 ```JavaScript
 fetch("https://localhost:7172/api/Sessions/RegisterSession", {
 	method: "POST",
 	headers:{
 		"AYUS-API-KEY":"XXXXXXXX",
-		"ClientUUID": "xxxxx",
-		"MechanicUUID": "xxxxx",
-		"SessionDetails": "xxxxx"
+		"ClientUUID": "xxxxx", // [REQUIRED]
+		"MechanicUUID": "xxxxx", // [REQUIRED]
+		"SessionDetails": "xxxxx", // [REQUIRED]
+		"Flag": "Custom Flag" // *optional*
+	}
+})
+```
+### Update a Flag
+> You need to know the SessionID in order to grab the flag, not that this is not persistent. If the server reloads or crashes, the flag data is gone.
+```JavaScript
+fetch("https://localhost:7172/api/Sessions/Flag", {
+	method: "PUT",
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX",
+		"SessionID":"XXXXXXX", // [REQUIRED]
+		"Flag": "Custom Flag" // [REQUIRED]
 	}
 })
 ```
@@ -164,7 +181,8 @@ fetch("https://localhost:7172/api/Sessions/EndSession", {
 		"ClientUUID": "xxxxx",     // if kabalo ka sa uid sa client, then only specify this
 		"MechanicUUID": "xxxxx",   // if kabalo ka sa uid sa mechanic, then only specify this
 		"SessionID": "xxxxx"       // if kabalo ka sa uid sa session, then only specify this
-		"TransactionID": "xxxxx"   // THIS IS A MUST! dapat maka transact paka before maka end, [for testing, just put random string]
+		"TransactionID": "xxxxx",   // THIS IS A MUST! dapat maka transact paka before maka end, [for testing, just put random string]
+		"Flag": "Custom Flag" // *optional*
 	} 
 })
 ```
