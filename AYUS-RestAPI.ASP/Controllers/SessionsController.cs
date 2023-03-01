@@ -15,10 +15,12 @@ namespace AYUS_RestAPI.ASP.Controllers
     public class SessionsController : Controller
     {
         private readonly DataRepository dataRepository;
+        private readonly TempDataRepository tempDataRepository;
         private static string API_KEY = "API_SECRET-42e016b219421dc83d180bdee27f81dd";
-        public SessionsController(DataRepository data)
+        public SessionsController(DataRepository data, TempDataRepository temp)
         {
             dataRepository = data;
+            tempDataRepository = temp;
         }
 
         [HttpGet]
@@ -83,6 +85,7 @@ namespace AYUS_RestAPI.ASP.Controllers
             Request.Headers.TryGetValue("ClientUUID", out var clientUUID);
             Request.Headers.TryGetValue("MechanicUUID", out var mechanicUUID);
             Request.Headers.TryGetValue("SessionDetails", out var sessionDetails);
+            Request.Headers.TryGetValue("Flag", out var sessionFlag);
 
             if (clientUUID.ToString() == mechanicUUID.ToString())
             {
@@ -136,10 +139,29 @@ namespace AYUS_RestAPI.ASP.Controllers
             };
 
             dataRepository.AddSession(session);
-            dataRepository.AddMapLocation(new ServiceMapLocationAPI
+            // grab an existing map location data for users
+            var clientExistingLocation = tempDataRepository.GetMapLocations().FirstOrDefault(m => m.UUID == session.MechanicUUID && m.Latitude != 0 && m.Longitude != 0);
+            var mechanicExistingLocation = tempDataRepository.GetMapLocations().FirstOrDefault(c => c.UUID == session.ClientUUID && c.Latitude != 0 && c.Longitude != 0);
+            ServiceMapLocationAPI mapLocation = new ServiceMapLocationAPI
             {
                 SessionID = session.SessionID,
-            });
+            };
+            
+            if(mechanicExistingLocation != null)
+            {
+                mapLocation.MechanicLocLat = mechanicExistingLocation.Latitude;
+                mapLocation.MechanicLocLon = mechanicExistingLocation.Longitude;
+            }
+
+            if(clientExistingLocation != null)
+            {
+                mapLocation.ClientLocLat = clientExistingLocation.Latitude;
+                mapLocation.ClientLocLon = clientExistingLocation.Longitude;
+            }
+
+            // save the map location
+            dataRepository.AddMapLocation(mapLocation);
+            tempDataRepository.GetSessionFlags().Add(new SessionFlag { SessionID = session.SessionID, Flag = sessionFlag});
             
             return Json(new { Status = 201, Message = "Session Registered", session.SessionID }, options);
         }
@@ -171,12 +193,12 @@ namespace AYUS_RestAPI.ASP.Controllers
                 {
                     if (session.MechanicUUID == mechanicUUID || session.ClientUUID == clientUUID || session.SessionID == sessionID)
                     {
-                        foundData = new { Status = 200, Message = "Sesion found", SessionData = session };
+                        foundData = new { Status = 200, Message = "Sesion found", SessionData = session, tempDataRepository.GetSessionFlags().FirstOrDefault(s => s.SessionID == session.SessionID)?.Flag };
                     }
                 }
             });
-
-            if(foundData != null) return Json(foundData, options);
+            
+            if(foundData != null) return Json(new { Status = 200, Message = "Found Session", foundData }, options);
 
             return Json(new { Status = 404, Message = "No session found"}, options);
         }
@@ -199,9 +221,10 @@ namespace AYUS_RestAPI.ASP.Controllers
             Request.Headers.TryGetValue("ClientUUID", out var clientUUID);
             Request.Headers.TryGetValue("MechanicUUID", out var mechanicUUID);
             Request.Headers.TryGetValue("SessionID", out var sessionID);
+            Request.Headers.TryGetValue("Flag", out var sessionFlag);
 
             // check if transaction header was found in the header of the request
-            if(!Request.Headers.TryGetValue("TransactionID", out var transactID))
+            if (!Request.Headers.TryGetValue("TransactionID", out var transactID))
             {
                 return Json(new { Status = 401, Message = "TransactionID must be specified at the header of the request, make sure that the transaction has been done before ending the session" }, options);
             }
@@ -232,6 +255,8 @@ namespace AYUS_RestAPI.ASP.Controllers
                 }
             });
 
+            
+
 
             // return success if the session is already exist, because if not, no session can be ended if not created :)
             if(foundSession != null)
@@ -239,11 +264,52 @@ namespace AYUS_RestAPI.ASP.Controllers
                 foundSession.TransactionID = transactID;
                 foundSession.TimeEnd = DateTime.UtcNow;
                 foundSession.isActive = false;
-                return Json(new { Status = 200, Message = $"Session with ID {sessionID} has been ended successfully" }, options);
+                SessionFlag? flag = tempDataRepository.GetSessionFlags().FirstOrDefault(flag => flag.SessionID == sessionID);
+                if(flag != null)
+                {
+                    flag.Flag = sessionFlag;
+                }
+                dataRepository.UpdateSession(foundSession);
+                return Json(new { Status = 200, Message = $"Session with ID {foundSession.SessionID} has been ended successfully" }, options);
             }
 
             // return not found if no session was found 
             return Json(new { Status = 404, Message = "No session found" }, options);
+        }
+
+        [HttpPut]
+        [Route("Flag")]
+        public JsonResult UpdateFlag()
+        {
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
+            {
+                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
+            }
+
+            if (apiKey != API_KEY)
+            {
+                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied" }, options);
+            }
+
+            if (!Request.Headers.TryGetValue("SessionID", out var sessionID))
+            {
+                return Json(new { Status = 401, Message = "Please specify the SessionID at the header of the request" }, options);
+            }
+
+            if(!Request.Headers.TryGetValue("Flag", out var sessionFlag))
+            {
+                return Json(new { Status = 401, Message = "Please specify the Flag at the header of the request" }, options);
+            }
+
+            SessionFlag? FLAG = tempDataRepository.GetSessionFlags().FirstOrDefault(flag => flag.SessionID == sessionID.ToString());
+
+            if(FLAG != null)
+            {
+                FLAG.Flag = sessionFlag;
+                return Json(new { Status = 200, Message = $"Updated flag to {sessionFlag}" }, options);
+            }
+            return Json(new { Status = 404, Message = $"SessionFlag not found, not that this is not persistent, once a server restarted, the flag is gone." }, options);
         }
 
         [HttpPut]

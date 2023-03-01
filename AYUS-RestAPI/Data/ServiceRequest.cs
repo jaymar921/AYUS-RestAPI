@@ -36,6 +36,7 @@
 
     public class ServiceRequestModel
     {
+        public string? RequestID { get; set; } = Guid.NewGuid().ToString();
         public string Requestor { get; set; } = string.Empty;
         public string Recepient { get; set; } = string.Empty;
 

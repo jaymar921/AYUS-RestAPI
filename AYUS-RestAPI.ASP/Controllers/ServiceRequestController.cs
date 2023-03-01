@@ -45,15 +45,15 @@ namespace AYUS_RestAPI.ASP.Controllers
             Request.Headers.TryGetValue("ServiceRequestUUID", out var serviceRequestUUID);
             User? user = dataRepository.GetUser(mechanicUUID.ToString()) ?? dataRepository.GetUser(clientUUID.ToString());
 
-            //if (user == null)
-            //{
-            //    return Json(new { Status = 404, Message = "No data found from MechanicUUID specified" }, options);
-            //}
+            if (user != null)
+            {
+                if (!user.AccountStatus.GetRole.Equals(Roles.MECHANIC))
+                {
+                    return Json(new { Status = 400, Message = "User[Mechanic] is found but the role is not a Mechanic" }, options);
+                }
+            }
 
-            //if (!user.AccountStatus.GetRole.Equals(Roles.MECHANIC))
-            //{
-            //    return Json(new { Status = 400, Message = "User is found but the role is not a Mechanic" }, options);
-            //}
+            
 
             List<object> requests = new List<object>();
             tempDataRepository.GetServiceRequests().Where(s => s.Recepient == mechanicUUID.ToString() || s.RequestID == serviceRequestUUID.ToString()).ToList().ForEach(
@@ -70,7 +70,8 @@ namespace AYUS_RestAPI.ASP.Controllers
                         req.Picture,
                         req.Vehicle,
                         dataRepository.GetService(req.Service)?.ServiceName,
-                        req.Status
+                        req.Status,
+                        req.NewStatus
                     });
             });
             
@@ -110,7 +111,7 @@ namespace AYUS_RestAPI.ASP.Controllers
             }
             ServiceRequest request = ServiceRequest.parse(model);
 
-            ServiceRequest? requestFound = tempDataRepository.GetServiceRequests().FirstOrDefault(r => r.Recepient == request.Recepient && r.Requestor == request.Requestor && request.Status.ToLower() != "declined");
+            ServiceRequest? requestFound = tempDataRepository.GetServiceRequests().FirstOrDefault(r => ((r.Recepient == request.Recepient && r.Requestor == request.Requestor) || r.RequestID == request.RequestID) && request.Status.ToLower() != "declined");
             
             if(requestFound != null)
             {
