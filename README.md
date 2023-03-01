@@ -92,8 +92,6 @@ fetch("https://localhost:7172/api/Account", {
 ### Register a session
 > Registering a session will remove a mechanic from [Available Sessions](#get-an-available-mechanic). It will also create a MapLocation Service. You can [Update](#update-a-maplocation) or [Retrieve](#get-a-maplocation) a map service data. A [Flag](#update-a-flag) is also created after registering a session.
 
-<br>
-
 > The MapLocation data is auto filled with [TemporaryMapLocation](#get-maplocation) if the values exists but it will not update overtime, you must call an [[Update]MapLocation](#update-a-maplocation).
 ```JavaScript
 fetch("https://localhost:7172/api/Sessions/RegisterSession", {
