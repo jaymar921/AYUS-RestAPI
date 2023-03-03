@@ -10,6 +10,7 @@ namespace AYUS_RestAPI.ASP.Models
         private readonly AppDbContext _dbContext;
         public DataRepository(AppDbContext appDbContext) 
         {
+            appDbContext.Database.EnsureCreated();
             _dbContext = appDbContext;
             //_dbContext.Database.EnsureDeleted();
         }
