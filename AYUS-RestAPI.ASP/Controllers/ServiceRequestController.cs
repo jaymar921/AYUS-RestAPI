@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
 using AYUS_RestAPI.Data;
+using AYUS_RestAPI.ASP.Classes;
 
 namespace AYUS_RestAPI.ASP.Controllers
 {
@@ -16,7 +17,6 @@ namespace AYUS_RestAPI.ASP.Controllers
         private JsonSerializerOptions options = new JsonSerializerOptions { WriteIndented = true };
         private readonly DataRepository dataRepository;
         private readonly TempDataRepository tempDataRepository;
-        private static string API_KEY = "API_SECRET-42e016b219421dc83d180bdee27f81dd";
         public ServiceRequestController(DataRepository dataRepository, TempDataRepository temp)
         {
             this.dataRepository = dataRepository;
@@ -26,15 +26,12 @@ namespace AYUS_RestAPI.ASP.Controllers
         [HttpGet]
         public JsonResult GetRequest()
         {
-            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
-            {
-                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
-            }
+            // header validation
+            var _validation = HeaderValidation.Validate(Request);
+            bool.TryParse((string?)_validation[0], out bool validated);
+            if (!validated)
+                return Json(_validation[1], options);
 
-            if (apiKey != API_KEY)
-            {
-                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied" }, options);
-            }
 
             Request.Headers.TryGetValue("MechanicUUID", out var mechanicUUID);
            
@@ -84,15 +81,12 @@ namespace AYUS_RestAPI.ASP.Controllers
         [HttpPost, HttpPut]
         public JsonResult PostRequest([FromBody] ServiceRequestModel model)
         {
-            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
-            {
-                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
-            }
+            // header validation
+            var _validation = HeaderValidation.Validate(Request);
+            bool.TryParse((string?)_validation[0], out bool validated);
+            if (!validated)
+                return Json(_validation[1], options);
 
-            if (apiKey != API_KEY)
-            {
-                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied" }, options);
-            }
             User? user = dataRepository.GetUser(model.Recepient);
 
             if (user == null)
@@ -140,15 +134,12 @@ namespace AYUS_RestAPI.ASP.Controllers
         [HttpDelete]
         public JsonResult DeleteRequest()
         {
-            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
-            {
-                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
-            }
+            // header validation
+            var _validation = HeaderValidation.Validate(Request);
+            bool.TryParse((string?)_validation[0], out bool validated);
+            if (!validated)
+                return Json(_validation[1], options);
 
-            if (apiKey != API_KEY)
-            {
-                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied" }, options);
-            }
 
             if (!Request.Headers.TryGetValue("ServiceRequestUUID", out var serviceRequestUUID))
             {

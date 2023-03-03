@@ -1,4 +1,5 @@
-﻿using AYUS_RestAPI.ASP.Models;
+﻿using AYUS_RestAPI.ASP.Classes;
+using AYUS_RestAPI.ASP.Models;
 using AYUS_RestAPI.ASP.Models.Request;
 using AYUS_RestAPI.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,6 @@ namespace AYUS_RestAPI.ASP.Controllers
     {
         JsonSerializerOptions options = new JsonSerializerOptions { WriteIndented = true };
         private readonly DataRepository dataRepository;
-        private static string API_KEY = "API_SECRET-42e016b219421dc83d180bdee27f81dd";
 
         public TransactionController(DataRepository dataRepository) 
         {
@@ -22,15 +22,12 @@ namespace AYUS_RestAPI.ASP.Controllers
         [HttpPost]
         public JsonResult PostTransaction(TransactionModel model)
         {
-            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
-            {
-                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
-            }
+            // header validation
+            var _validation = HeaderValidation.Validate(Request);
+            bool.TryParse((string?)_validation[0], out bool validated);
+            if (!validated)
+                return Json(_validation[1], options);
 
-            if (apiKey != API_KEY)
-            {
-                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied" }, options);
-            }
 
             if (!TryValidateModel(model))
             {
@@ -53,15 +50,12 @@ namespace AYUS_RestAPI.ASP.Controllers
         [HttpGet]
         public JsonResult GetTransaction()
         {
-            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
-            {
-                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
-            }
+            // header validation
+            var _validation = HeaderValidation.Validate(Request);
+            bool.TryParse((string?)_validation[0], out bool validated);
+            if (!validated)
+                return Json(_validation[1], options);
 
-            if (apiKey != API_KEY)
-            {
-                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied" }, options);
-            }
 
             if (!Request.Headers.TryGetValue("TransactionID", out var transactionID))
             {

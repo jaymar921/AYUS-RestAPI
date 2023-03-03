@@ -1,4 +1,5 @@
-﻿using AYUS_RestAPI.ASP.Models;
+﻿using AYUS_RestAPI.ASP.Classes;
+using AYUS_RestAPI.ASP.Models;
 using AYUS_RestAPI.ASP.Models.Request.MetaData;
 using AYUS_RestAPI.Entity.Metadata;
 using AYUS_RestAPI.Entity.Metadata.Mechanic;
@@ -13,7 +14,6 @@ namespace AYUS_RestAPI.ASP.Controllers
     public class MechanicController : Controller
     {
         private readonly DataRepository dataRepository;
-        private static string API_KEY = "API_SECRET-42e016b219421dc83d180bdee27f81dd";
         public JsonSerializerOptions options = new JsonSerializerOptions { WriteIndented = true };
         public MechanicController(DataRepository data)
         {
@@ -24,17 +24,14 @@ namespace AYUS_RestAPI.ASP.Controllers
         [Route("Shop")]
         public JsonResult GetShop()
         {
-            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
-            {
-                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
-            }
+            // header validation
+            var _validation = HeaderValidation.Validate(Request);
+            bool.TryParse((string?)_validation[0], out bool validated);
+            if (!validated)
+                return Json(_validation[1], options);
 
-            if (apiKey != API_KEY)
-            {
-                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied" }, options);
-            }
 
-            if(!Request.Headers.TryGetValue("MechanicUUID", out var mechanicUUID))
+            if (!Request.Headers.TryGetValue("MechanicUUID", out var mechanicUUID))
             {
                 return Json(new { Status = 401, Message = "Please specify the MechanicUUID at the header of the request" }, options);
             }
@@ -67,15 +64,12 @@ namespace AYUS_RestAPI.ASP.Controllers
         [Route("Shop")]
         public JsonResult PutShop(ShopModel model)
         {
-            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
-            {
-                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
-            }
+            // header validation
+            var _validation = HeaderValidation.Validate(Request);
+            bool.TryParse((string?)_validation[0], out bool validated);
+            if (!validated)
+                return Json(_validation[1], options);
 
-            if (apiKey != API_KEY)
-            {
-                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied" }, options);
-            }
 
             if (!Request.Headers.TryGetValue("MechanicUUID", out var mechanicUUID))
             {
@@ -112,15 +106,12 @@ namespace AYUS_RestAPI.ASP.Controllers
         [Route("ServiceOffer")]
         public JsonResult PostServiceOffer(ServiceOfferModel model)
         {
-            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
-            {
-                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
-            }
+            // header validation
+            var _validation = HeaderValidation.Validate(Request);
+            bool.TryParse((string?)_validation[0], out bool validated);
+            if (!validated)
+                return Json(_validation[1], options);
 
-            if (apiKey != API_KEY)
-            {
-                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied" }, options);
-            }
 
             if (!Request.Headers.TryGetValue("MechanicUUID", out var mechanicUUID))
             {
@@ -167,15 +158,12 @@ namespace AYUS_RestAPI.ASP.Controllers
         [Route("ServiceOffer")]
         public JsonResult GetServiceOffer()
         {
-            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
-            {
-                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
-            }
+            // header validation
+            var _validation = HeaderValidation.Validate(Request);
+            bool.TryParse((string?)_validation[0], out bool validated);
+            if (!validated)
+                return Json(_validation[1], options);
 
-            if (apiKey != API_KEY)
-            {
-                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied" }, options);
-            }
 
             if (!Request.Headers.TryGetValue("MechanicUUID", out var mechanicUUID))
             {
@@ -222,15 +210,12 @@ namespace AYUS_RestAPI.ASP.Controllers
         [Route("ServiceOffer")]
         public JsonResult DeleteServiceOffer()
         {
-            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
-            {
-                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
-            }
+            // header validation
+            var _validation = HeaderValidation.Validate(Request);
+            bool.TryParse((string?)_validation[0], out bool validated);
+            if (!validated)
+                return Json(_validation[1], options);
 
-            if (apiKey != API_KEY)
-            {
-                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied" }, options);
-            }
 
             if (!Request.Headers.TryGetValue("MechanicUUID", out var mechanicUUID))
             {
@@ -278,15 +263,12 @@ namespace AYUS_RestAPI.ASP.Controllers
         [Route("Billing")]
         public JsonResult PostBilling(BillingModel model)
         {
-            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
-            {
-                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
-            }
+            // header validation
+            var _validation = HeaderValidation.Validate(Request);
+            bool.TryParse((string?)_validation[0], out bool validated);
+            if (!validated)
+                return Json(_validation[1], options);
 
-            if (apiKey != API_KEY)
-            {
-                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied" }, options);
-            }
 
             Shop? shop = dataRepository.GetShop(model.ShopID);
 
@@ -315,15 +297,12 @@ namespace AYUS_RestAPI.ASP.Controllers
         [Route("Billing")]
         public JsonResult GetBilling()
         {
-            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
-            {
-                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
-            }
+            // header validation
+            var _validation = HeaderValidation.Validate(Request);
+            bool.TryParse((string?)_validation[0], out bool validated);
+            if (!validated)
+                return Json(_validation[1], options);
 
-            if (apiKey != API_KEY)
-            {
-                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied" }, options);
-            }
 
             if (!Request.Headers.TryGetValue("ShopID", out var shopID))
             {
@@ -352,15 +331,12 @@ namespace AYUS_RestAPI.ASP.Controllers
         [Route("Billing")]
         public JsonResult DeleteBilling()
         {
-            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
-            {
-                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
-            }
+            // header validation
+            var _validation = HeaderValidation.Validate(Request);
+            bool.TryParse((string?)_validation[0], out bool validated);
+            if (!validated)
+                return Json(_validation[1], options);
 
-            if (apiKey != API_KEY)
-            {
-                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied" }, options);
-            }
 
             if (!Request.Headers.TryGetValue("BillingID", out var billingID))
             {

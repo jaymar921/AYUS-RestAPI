@@ -1,4 +1,5 @@
-﻿using AYUS_RestAPI.ASP.Models;
+﻿using AYUS_RestAPI.ASP.Classes;
+using AYUS_RestAPI.ASP.Models;
 using AYUS_RestAPI.ASP.Models.Request;
 using AYUS_RestAPI.Data;
 using AYUS_RestAPI.Entity.Metadata;
@@ -16,7 +17,8 @@ namespace AYUS_RestAPI.ASP.Controllers
     {
         private readonly DataRepository dataRepository;
         private readonly TempDataRepository tempDataRepository;
-        private static string API_KEY = "API_SECRET-42e016b219421dc83d180bdee27f81dd";
+
+        JsonSerializerOptions options = new JsonSerializerOptions { WriteIndented = true };
         public SessionsController(DataRepository data, TempDataRepository temp)
         {
             dataRepository = data;
@@ -27,16 +29,12 @@ namespace AYUS_RestAPI.ASP.Controllers
         [Route("AvailableMechanics")]
         public JsonResult GetAvailableMechanics()
         {
-            var options = new JsonSerializerOptions { WriteIndented = true };
-            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
-            {
-                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
-            }
+            // header validation
+            var _validation = HeaderValidation.Validate(Request);
+            bool.TryParse((string?)_validation[0], out bool validated);
+            if (!validated)
+                return Json(_validation[1], options);
 
-            if (apiKey != API_KEY)
-            {
-                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied" }, options);
-            }
 
 
             List<MechanicPartial> users = new List<MechanicPartial>();
@@ -71,16 +69,12 @@ namespace AYUS_RestAPI.ASP.Controllers
         [Route("RegisterSession")]
         public JsonResult PutSession()
         {
-            var options = new JsonSerializerOptions { WriteIndented = true };
-            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
-            {
-                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
-            }
+            // header validation
+            var _validation = HeaderValidation.Validate(Request);
+            bool.TryParse((string?)_validation[0], out bool validated);
+            if (!validated)
+                return Json(_validation[1], options);
 
-            if (apiKey != API_KEY)
-            {
-                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied" }, options);
-            }
 
             Request.Headers.TryGetValue("ClientUUID", out var clientUUID);
             Request.Headers.TryGetValue("MechanicUUID", out var mechanicUUID);
@@ -170,16 +164,12 @@ namespace AYUS_RestAPI.ASP.Controllers
         [Route("GetSession")]
         public JsonResult GetSession()
         {
-            var options = new JsonSerializerOptions { WriteIndented = true };
-            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
-            {
-                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
-            }
+            // header validation
+            var _validation = HeaderValidation.Validate(Request);
+            bool.TryParse((string?)_validation[0], out bool validated);
+            if (!validated)
+                return Json(_validation[1], options);
 
-            if (apiKey != API_KEY)
-            {
-                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied" }, options);
-            }
 
             Request.Headers.TryGetValue("ClientUUID", out var clientUUID);
             Request.Headers.TryGetValue("MechanicUUID", out var mechanicUUID);
@@ -207,16 +197,12 @@ namespace AYUS_RestAPI.ASP.Controllers
         [Route("EndSession")]
         public JsonResult EndSession()
         {
-            var options = new JsonSerializerOptions { WriteIndented = true };
-            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
-            {
-                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
-            }
+            // header validation
+            var _validation = HeaderValidation.Validate(Request);
+            bool.TryParse((string?)_validation[0], out bool validated);
+            if (!validated)
+                return Json(_validation[1], options);
 
-            if (apiKey != API_KEY)
-            {
-                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied" }, options);
-            }
 
             Request.Headers.TryGetValue("ClientUUID", out var clientUUID);
             Request.Headers.TryGetValue("MechanicUUID", out var mechanicUUID);
@@ -281,16 +267,12 @@ namespace AYUS_RestAPI.ASP.Controllers
         [Route("Flag")]
         public JsonResult UpdateFlag()
         {
-            var options = new JsonSerializerOptions { WriteIndented = true };
-            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
-            {
-                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
-            }
+            // header validation
+            var _validation = HeaderValidation.Validate(Request);
+            bool.TryParse((string?)_validation[0], out bool validated);
+            if (!validated)
+                return Json(_validation[1], options);
 
-            if (apiKey != API_KEY)
-            {
-                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied" }, options);
-            }
 
             if (!Request.Headers.TryGetValue("SessionID", out var sessionID))
             {
@@ -316,18 +298,14 @@ namespace AYUS_RestAPI.ASP.Controllers
         [Route("MapLocation")]
         public JsonResult PutMapLocation()
         {
-            var options = new JsonSerializerOptions { WriteIndented = true };
-            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
-            {
-                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
-            }
+            // header validation
+            var _validation = HeaderValidation.Validate(Request);
+            bool.TryParse((string?)_validation[0], out bool validated);
+            if (!validated)
+                return Json(_validation[1], options);
 
-            if (apiKey != API_KEY)
-            {
-                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied" }, options);
-            }
 
-            if(!Request.Headers.TryGetValue("SessionID", out var sessionID))
+            if (!Request.Headers.TryGetValue("SessionID", out var sessionID))
             {
                 return Json(new { Status = 401, Message = "Please specify the SessionID at the header of the request" }, options);
             }
@@ -365,16 +343,12 @@ namespace AYUS_RestAPI.ASP.Controllers
         [Route("MapLocation")]
         public JsonResult GetMapLocation()
         {
-            var options = new JsonSerializerOptions { WriteIndented = true };
-            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
-            {
-                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
-            }
+            // header validation
+            var _validation = HeaderValidation.Validate(Request);
+            bool.TryParse((string?)_validation[0], out bool validated);
+            if (!validated)
+                return Json(_validation[1], options);
 
-            if (apiKey != API_KEY)
-            {
-                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied" }, options);
-            }
 
             if (!Request.Headers.TryGetValue("SessionID", out var sessionID))
             {
