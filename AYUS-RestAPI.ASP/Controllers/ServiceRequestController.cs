@@ -53,7 +53,7 @@ namespace AYUS_RestAPI.ASP.Controllers
             
 
             List<object> requests = new List<object>();
-            tempDataRepository.GetServiceRequests().Where(s => s.Recepient == mechanicUUID.ToString() || s.RequestID == serviceRequestUUID.ToString()).ToList().ForEach(
+            tempDataRepository.GetServiceRequests().Where(s => (s.Recepient == mechanicUUID.ToString() || s.RequestID == serviceRequestUUID.ToString()) && s.Status.ToLower() != "declined").ToList().ForEach(
                 req => {
                     requests.Add(new {
                         req.RequestID,
@@ -78,7 +78,7 @@ namespace AYUS_RestAPI.ASP.Controllers
         }
 
 
-        [HttpPost, HttpPut]
+        [HttpPost]
         public JsonResult PostRequest([FromBody] ServiceRequestModel model)
         {
             // header validation
@@ -104,22 +104,6 @@ namespace AYUS_RestAPI.ASP.Controllers
                 return Json(new { Status = 404, Message = "No data found from Requestor specified" }, options);
             }
             ServiceRequest request = ServiceRequest.parse(model);
-
-            ServiceRequest? requestFound = tempDataRepository.GetServiceRequests().FirstOrDefault(r => ((r.Recepient == request.Recepient && r.Requestor == request.Requestor) || r.RequestID == request.RequestID) && request.Status.ToLower() != "declined");
-            
-            if(requestFound != null)
-            {
-                requestFound.Status = request.NewStatus;
-
-                return Json(new
-                {
-                    Status = 200,
-                    Message = $"A request has been found for '{user.Credential.Username}'",
-                    Info = requestFound
-                }, options);
-            }
-                
-            
                 
             tempDataRepository.GetServiceRequests().Add(request);
 
@@ -128,6 +112,62 @@ namespace AYUS_RestAPI.ASP.Controllers
                 Status = 201,
                 Message = $"A request has been saved for mechanic '{user.Credential.Username}'",
                 Info = request
+            }, options);
+        }
+
+        [HttpPut]
+        public JsonResult PutRequest([FromBody] ServiceRequestModel model)
+        {
+            // header validation
+            var _validation = HeaderValidation.Validate(Request);
+            bool.TryParse((string?)_validation[0], out bool validated);
+            if (!validated)
+                return Json(_validation[1], options);
+
+            User? user = dataRepository.GetUser(model.Recepient);
+
+            if (user == null)
+            {
+                return Json(new { Status = 404, Message = "No data found from Recepient specified" }, options);
+            }
+
+            if (!user.AccountStatus.GetRole.Equals(Roles.MECHANIC))
+            {
+                return Json(new { Status = 400, Message = "Recepient is found but the role is not a Mechanic" }, options);
+            }
+
+            if (dataRepository.GetUser(model.Requestor) == null)
+            {
+                return Json(new { Status = 404, Message = "No data found from Requestor specified" }, options);
+            }
+            ServiceRequest request = ServiceRequest.parse(model);
+
+            ServiceRequest? requestFound = tempDataRepository.GetServiceRequests().FirstOrDefault(r => ((r.Recepient == request.Recepient && r.Requestor == request.Requestor) || r.RequestID == request.RequestID) && request.Status.ToLower() != "declined");
+
+            if (requestFound == null)
+            {
+                return Json(new
+                {
+                    Status = 200,
+                    Message = $"No data found'"
+                }, options);
+            }
+
+
+
+            requestFound.Vehicle = model.Vehicle;
+            requestFound.Status = model.NewStatus;
+            requestFound.Contact = model.Contact;
+            requestFound.Location = model.Location;
+            requestFound.Service = model.Service;
+            requestFound.Description = model.Description;
+            requestFound.Picture = model.Picture;
+
+            return Json(new
+            {
+                Status = 200,
+                Message = $"A request has been updated '{user.Credential.Username}'",
+                Info = model
             }, options);
         }
 
