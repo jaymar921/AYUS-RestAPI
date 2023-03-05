@@ -44,7 +44,7 @@ namespace AYUS_RestAPI.ASP.Controllers
 
             if (user != null)
             {
-                if (!user.AccountStatus.GetRole.Equals(Roles.MECHANIC))
+                if (!user.AccountStatus.GetRole.Equals(Roles.MECHANIC) && user.PersonalInformation.UUID == mechanicUUID.ToString())
                 {
                     return Json(new { Status = 400, Message = "User[Mechanic] is found but the role is not a Mechanic" }, options);
                 }
@@ -53,7 +53,7 @@ namespace AYUS_RestAPI.ASP.Controllers
             
 
             List<object> requests = new List<object>();
-            tempDataRepository.GetServiceRequests().Where(s => (s.Recepient == mechanicUUID.ToString() || s.RequestID == serviceRequestUUID.ToString()) && s.Status.ToLower() != "declined").ToList().ForEach(
+            tempDataRepository.GetServiceRequests().Where(s => (s.Recepient == mechanicUUID.ToString() || s.RequestID == serviceRequestUUID.ToString() || s.Requestor == clientUUID.ToString()) && s.Status.ToLower() != "declined").ToList().ForEach(
                 req => {
                     requests.Add(new {
                         req.RequestID,
