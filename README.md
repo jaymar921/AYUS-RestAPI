@@ -88,6 +88,46 @@ fetch("https://localhost:7172/api/Account", {
 })
 ```
 
+### Get User Rating
+```JavaScript
+fetch("https://localhost:7172/api/Account/Rating", {
+	method: "GET",
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX",
+		"uuid": "xxxxx", // [Required]
+	}
+})
+
+// Returns 200 if found, else 404
+{
+	Status = 200, 
+	Message = "Rating found for user '{Username}'", 
+	Rating = 0 // [double]
+}
+```
+
+### Update User Rating
+```JavaScript
+fetch("https://localhost:7172/api/Account/Rating", {
+	method: "PUT",
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX",
+		"uuid": "xxxxx", // [Required]
+	},
+	body:{
+		"Rating": 0 // [double]
+	}
+})
+
+// Returns 200 if success, else 404
+{
+	Status = 200, 
+	Message = "Updated Rating for user '{Username}'", 
+	UpdatedRating = 0, // [double]
+	PreviousRating = 0, // [double]
+}
+```
+
 # Session
 ### Register a session
 > Registering a session will remove a mechanic from [Available Sessions](#get-an-available-mechanic). It will also create a MapLocation Service. You can [Update](#update-a-maplocation) or [Retrieve](#get-a-maplocation) a map service data. A [Flag](#update-a-flag) is also created after registering a session.
@@ -158,7 +198,7 @@ fetch("https://localhost:7172/api/Sessions/MapLocation", {
 > When updating a MapLocation, there will be two devices involved and you cannot get the location of both at once. If you can track the client's location, then only update the client's location, otherwise do the same to the mechanic.
 ```JavaScript
 fetch("https://localhost:7172/api/Sessions/MapLocation", {
-	method: "GET",
+	method: "PUT",
 	headers:{
 		"AYUS-API-KEY":"XXXXXXXX",
 		"SessionID": "XXXXX", // [REQUIRED]
@@ -351,6 +391,7 @@ fetch("https://localhost:7172/api/Mechanic/Shop", {
 	method: "GET",
 	headers:{
 		"AYUS-API-KEY":"XXXXXXXX",
+		"option":"all", // [optional] once called, mechanicUUID is nothing, [returns an array]
 		"MechanicUUID": "XXXXX", // [REQUIRED]
 	}
 })
