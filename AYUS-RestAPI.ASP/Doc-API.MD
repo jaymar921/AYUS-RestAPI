@@ -66,6 +66,53 @@ POST and PUT for Clients/Mechanic/Admin's data, for Mechanic, the "Shop" should 
 }
 ```
 
+### Update Personal Information
+```JavaScript
+fetch("https://localhost:7172/api/Account", {
+	method: "PUT",
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX",
+	},
+	body: {
+		"UUID": "XXXX", // [REQUIRED]
+		"Firstname": String,
+		"Lastname": String,
+		"Contact": String,
+		"Birthdate": "YYYY-MM-DDT00:00:00",
+		"Address": String,
+		"LicenseNumber": String,
+		"Expiry": "YYYY-MM-DDT00:00:00"
+	}
+})
+
+
+// OUTPUT [if success]
+{
+    "Status": 200,
+    "Message": "Updated Personal Information for user 'user'",
+    "UpdatedInformation": {
+        "UUID": "uuid",
+        "Firstname": "new Firstname",
+        "Lastname": "new Lastname",
+        "Contact": "new Contact",
+        "Birthdate": "new Birthdate",
+        "Address": "new Address",
+        "LicenseNumber": "new License Number",
+        "Expiry": "new Expiry"
+    },
+    "OldInformation": {
+        "UUID": "uuid",
+        "Firstname": "old Firstname",
+        "Lastname": "old Lastname",
+        "Contact": "old Contact",
+        "Birthdate": "old Birthdate",
+        "Address": "old Address",
+        "LicenseNumber": "old License Number",
+        "Expiry": "old Expiry"
+    }
+}
+```
+
 ### PUT account [reset password]
 ```JavaScript
 fetch("https://localhost:7172/api/Account/Password?uuid=****", {
