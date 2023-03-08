@@ -62,13 +62,17 @@ POST and PUT for Clients/Mechanic/Admin's data, for Mechanic, the "Shop" should 
             "ShopDescription": String
         },
         "Role": "CLIENT" // MECHANIC/ADMIN
+		"rating": 0,
+		"isDeleted": false,
+		"isLocked": false,
+		"isOnline": false
     }
 }
 ```
 
 ### Update Personal Information
 ```JavaScript
-fetch("https://localhost:7172/api/Account", {
+fetch("https://localhost:7172/api/Account/PersonalInformation", {
 	method: "PUT",
 	headers:{
 		"AYUS-API-KEY":"XXXXXXXX",
@@ -113,6 +117,48 @@ fetch("https://localhost:7172/api/Account", {
 }
 ```
 
+### Update Account Status
+```JavaScript
+fetch("https://localhost:7172/api/Account/AccountStatus", {
+	method: "PUT",
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX",
+	},
+	body: {
+		"uuid": "XXXXXX", // [REQUIRED!]
+		"isDeleted": false,
+		"isLocked": false,
+		"isOnline": false
+	}
+})
+
+
+// OUTPUT [if success]
+{
+    "Status": 200,
+    "Message": "Updated Personal Information for user 'user'",
+    "UpdatedInformation": {
+        "UUID": String,
+        "ShopID": String,
+        "Role": String,
+        "Rating": Number,
+        "IsDeleted": boolean,
+        "IsLocked": boolean,
+        "IsOnline": boolean,
+        "GetRole": Number
+    },
+    "OldInformation": {
+        "UUID": String,
+        "ShopID": String,
+        "Role": String,
+        "Rating": Number,
+        "IsDeleted": boolean,
+        "IsLocked": boolean,
+        "IsOnline": boolean,
+        "GetRole": Number
+    }
+}
+```
 ### PUT account [reset password]
 ```JavaScript
 fetch("https://localhost:7172/api/Account/Password?uuid=****", {
