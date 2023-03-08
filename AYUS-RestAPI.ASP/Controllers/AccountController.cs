@@ -1,6 +1,7 @@
 ﻿using AYUS_RestAPI.ASP.Classes;
 using AYUS_RestAPI.ASP.Models;
 using AYUS_RestAPI.ASP.Models.Request;
+using AYUS_RestAPI.ASP.Models.Request.MetaData;
 using AYUS_RestAPI.Entity.Metadata;
 using AYUS_RestAPI.Utility;
 using Microsoft.AspNetCore.Mvc;
@@ -303,6 +304,95 @@ namespace AYUS_RestAPI.ASP.Controllers
 
 
             return Json(new { Status = 200, Message = $"Retrieved list of vehicle from user {user.Credential.Username}", Vehicles=vehicles.ParseVehicles() }, options);
+        }
+
+
+        [HttpGet]
+        [Route("Rating")]
+        public JsonResult GetRating()
+        {
+            var options = new JsonSerializerOptions { WriteIndented = true };
+
+            // header validation
+            var _validation = HeaderValidation.Validate(Request);
+            bool.TryParse((string?)_validation[0], out bool validated);
+            if (!validated)
+                return Json(_validation[1], options);
+
+
+            if (!Request.Headers.TryGetValue("uuid", out var uuid))
+            {
+                return Json(new { Status = 401, Message = "Please specify the uuid at the header of the request" }, options);
+            }
+
+            User? user = dataRepository.GetUser(uuid.ToString());
+            if (user == null)
+            {
+                return Json(new { Status = 404, Message = $"The user with UUID '{uuid}' does not exist." }, options);
+            }
+
+            return Json(new { Status = 200, Message = $"Rating found for user '{user.Credential.Username}'", user.AccountStatus.Rating }, options);
+        }
+
+        [HttpPut]
+        [Route("Rating")]
+        public JsonResult PutRating([FromBody] Rate rating)
+        {
+            var options = new JsonSerializerOptions { WriteIndented = true };
+
+            // header validation
+            var _validation = HeaderValidation.Validate(Request);
+            bool.TryParse((string?)_validation[0], out bool validated);
+            if (!validated)
+                return Json(_validation[1], options);
+
+
+            if (!Request.Headers.TryGetValue("uuid", out var uuid))
+            {
+                return Json(new { Status = 401, Message = "Please specify the uuid at the header of the request" }, options);
+            }
+
+            User? user = dataRepository.GetUser(uuid.ToString());
+            if (user == null)
+            {
+                return Json(new { Status = 404, Message = $"The user with UUID '{uuid}' does not exist." }, options);
+            }
+
+            double oldRating = user.AccountStatus.Rating;
+            user.AccountStatus.Rating = (oldRating + rating.Rating) / 2;
+            dataRepository.UpdateUser(user);
+
+
+
+            return Json(new { Status = 200, Message = $"Updated Rating for user '{user.Credential.Username}'", UpdatedRating = user.AccountStatus.Rating, PreviousRating = oldRating }, options);
+        }
+
+        [HttpPut]
+        [Route("PersonalInformation")]
+        public JsonResult UpdatePersonalInformation(PersonalInformation personal)
+        {
+            var options = new JsonSerializerOptions { WriteIndented = true };
+
+            // header validation
+            var _validation = HeaderValidation.Validate(Request);
+            bool.TryParse((string?)_validation[0], out bool validated);
+            if (!validated)
+                return Json(_validation[1], options);
+           
+
+            User? user = dataRepository.GetUser(personal.UUID.ToString());
+            if (user == null)
+            {
+                return Json(new { Status = 404, Message = $"The user with UUID '{personal.UUID}' does not exist." }, options);
+            }
+
+            PersonalInformation oldInfo = (PersonalInformation)user.PersonalInformation.Clone();
+            user.PersonalInformation = personal;
+            dataRepository.UpdateUser(user);
+
+
+
+            return Json(new { Status = 200, Message = $"Updated Personal Information for user '{user.Credential.Username}'", UpdatedInformation = user.PersonalInformation, OldInformation = oldInfo }, options);
         }
     }
 }

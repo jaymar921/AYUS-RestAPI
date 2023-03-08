@@ -52,6 +52,7 @@ namespace AYUS_RestAPI.ASP.Models
                 UUID = uuid,
                 Role = model.Role,
                 ShopID = model.Shop?.ShopID ?? "",
+                Rating = model.Rating
             };
             accountStatus.SetShop(new Entity.Metadata.Mechanic.Shop
             {

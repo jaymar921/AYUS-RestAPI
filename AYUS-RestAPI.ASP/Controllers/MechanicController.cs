@@ -30,6 +30,13 @@ namespace AYUS_RestAPI.ASP.Controllers
             if (!validated)
                 return Json(_validation[1], options);
 
+            if(Request.Headers.TryGetValue("option",out var opt))
+            {
+                if(opt.ToString().ToLower() == "all")
+                {
+                    return Json(new { Status = 200, Message = "Retrieved all shops", Shops = dataRepository.GetAllShop() }, options); 
+                }
+            }
 
             if (!Request.Headers.TryGetValue("MechanicUUID", out var mechanicUUID))
             {

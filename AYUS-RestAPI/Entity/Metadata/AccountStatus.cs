@@ -10,6 +10,7 @@ namespace AYUS_RestAPI.Entity.Metadata
         public string UUID { get; set; } = string.Empty;
         public string ShopID { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
+        public double Rating { get; set; } = 0;
 
         private Shop Shop = new Shop();
         public AccountStatus() { }

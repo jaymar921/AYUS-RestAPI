@@ -85,6 +85,12 @@ namespace AYUS_RestAPI.ASP.Models
                 _dbContext.SaveChanges();
             }
             AccountStatus accountStatus = _dbContext.accountStatus.First(a => a.UUID == user.PersonalInformation.UUID);
+            if(accountStatus != null)
+            {
+                accountStatus.Role = user.AccountStatus.Role;
+                accountStatus.Rating = user.AccountStatus.Rating;
+                _dbContext.SaveChanges();
+            }
             /*
             if(accountStatus != null)
             {

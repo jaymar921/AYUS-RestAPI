@@ -13,5 +13,10 @@ namespace AYUS_RestAPI.Entity.Metadata
         public string LicenseNumber { get; set; } = string.Empty;
         public DateTime Expiry { get; set; } = DateTime.UtcNow;
 
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
+
     }
 }
