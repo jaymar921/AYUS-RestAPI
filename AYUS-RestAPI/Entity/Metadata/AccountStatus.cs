@@ -11,6 +11,9 @@ namespace AYUS_RestAPI.Entity.Metadata
         public string ShopID { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
         public double Rating { get; set; } = 0;
+        public bool IsDeleted { get; set; } = false;
+        public bool IsLocked { get; set; } = false;
+        public bool IsOnline { get; set; } = false;
 
         private Shop Shop = new Shop();
         public AccountStatus() { }
@@ -24,5 +27,10 @@ namespace AYUS_RestAPI.Entity.Metadata
         public void SetShop(Shop shop) { Shop = shop; }
 
         public Roles GetRole { get { return (new Roles()).GetRoles(Role);  } }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
     }
 }

@@ -8,6 +8,9 @@ namespace AYUS_RestAPI.ASP.Models.Request.MetaData
         [Required]
         public string Role { get; set; } = string.Empty;
         public double Rating { get; set; } = 0;
+        public bool IsDeleted { get; set; } = false;
+        public bool IsLocked { get; set; } = false;
+        public bool IsOnline { get; set; } = false;
 
     }
 }

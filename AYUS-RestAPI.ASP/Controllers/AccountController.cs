@@ -394,5 +394,35 @@ namespace AYUS_RestAPI.ASP.Controllers
 
             return Json(new { Status = 200, Message = $"Updated Personal Information for user '{user.Credential.Username}'", UpdatedInformation = user.PersonalInformation, OldInformation = oldInfo }, options);
         }
+
+        [HttpPut]
+        [Route("AccountStatus")]
+        public JsonResult UpdateAccountStatus(UpdateAccountStatusModel accountStatus)
+        {
+            var options = new JsonSerializerOptions { WriteIndented = true };
+
+            // header validation
+            var _validation = HeaderValidation.Validate(Request);
+            bool.TryParse((string?)_validation[0], out bool validated);
+            if (!validated)
+                return Json(_validation[1], options);
+
+
+            User? user = dataRepository.GetUser(accountStatus.UUID.ToString());
+            if (user == null)
+            {
+                return Json(new { Status = 404, Message = $"The user with UUID '{accountStatus.UUID}' does not exist." }, options);
+            }
+
+            AccountStatus oldAccStatus = (AccountStatus)user.AccountStatus.Clone();
+            user.AccountStatus.IsOnline = accountStatus.IsOnline;
+            user.AccountStatus.IsLocked = accountStatus.IsLocked;
+            user.AccountStatus.IsDeleted = accountStatus.IsDeleted;
+            dataRepository.UpdateUser(user);
+
+
+
+            return Json(new { Status = 200, Message = $"Updated Account Status for user '{user.Credential.Username}'", UpdatedInformation = user.AccountStatus, OldInformation = oldAccStatus }, options);
+        }
     }
 }
