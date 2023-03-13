@@ -175,6 +175,14 @@ namespace AYUS_RestAPI.ASP.Controllers
             Request.Headers.TryGetValue("MechanicUUID", out var mechanicUUID);
             Request.Headers.TryGetValue("SessionID", out var sessionID);
 
+            if(Request.Headers.TryGetValue("Option", out var opt))
+            {
+                if(opt.ToString().ToLower() == "all")
+                {
+                    return Json(new { Status = 200, Message = "Found Sessions", Sessions= dataRepository.GetAllSessions().ToList() }, options);
+                }
+            }
+
             var sessionsList = dataRepository.GetAllSessions().ToList();
             object? foundData = null;
             sessionsList.ForEach(session =>

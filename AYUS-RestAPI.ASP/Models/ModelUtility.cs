@@ -52,7 +52,10 @@ namespace AYUS_RestAPI.ASP.Models
                 UUID = uuid,
                 Role = model.Role,
                 ShopID = model.Shop?.ShopID ?? "",
-                Rating = model.Rating
+                Rating = model.Rating,
+                IsDeleted = model.IsDeleted,
+                IsLocked = model.IsLocked,
+                IsOnline = model.IsOnline,
             };
             accountStatus.SetShop(new Entity.Metadata.Mechanic.Shop
             {
@@ -126,7 +129,10 @@ namespace AYUS_RestAPI.ASP.Models
                         ShopID = user.AccountStatus.GetShop().ShopID,
                         ShopDescription = user.AccountStatus.GetShop().ShopDescription,
                         ShopName = user.AccountStatus.GetShop().ShopName
-                    } : null
+                    } : null,
+                   IsDeleted = user.AccountStatus.IsDeleted,
+                   IsLocked = user.AccountStatus.IsLocked,
+                   IsOnline = user.AccountStatus.IsOnline,
                 }
             };
         }
