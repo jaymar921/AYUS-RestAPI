@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/AYUS-RestAPI.ASP/wwwroot/Images/_.png
+/AYUS-RestAPI.ASP/wwwroot/Images/93fcd3f4-3744-460f-8d47-cf640f262617_profile.png
+/AYUS-RestAPI.ASP/wwwroot/Images/93fcd3f4-3744-460f-8d47-cf640f262617_profile.jpg
