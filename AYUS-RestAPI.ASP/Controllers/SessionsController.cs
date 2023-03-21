@@ -156,7 +156,7 @@ namespace AYUS_RestAPI.ASP.Controllers
             // save the map location
             dataRepository.AddMapLocation(mapLocation);
             tempDataRepository.GetSessionFlags().Add(new SessionFlag { SessionID = session.SessionID, Flag = sessionFlag});
-            
+            dataRepository.AddLog(new Data.Logs { Info = $"A session was created between '{client.Credential.Username}' and '{mechanic.Credential.Username}'" });
             return Json(new { Status = 201, Message = "Session Registered", session.SessionID }, options);
         }
 
@@ -264,6 +264,8 @@ namespace AYUS_RestAPI.ASP.Controllers
                     flag.Flag = sessionFlag;
                 }
                 dataRepository.UpdateSession(foundSession);
+                dataRepository.AddLog(new Data.Logs { Info = $"Session with ID {foundSession.SessionID} has been ended successfully" });
+                
                 return Json(new { Status = 200, Message = $"Session with ID {foundSession.SessionID} has been ended successfully" }, options);
             }
 

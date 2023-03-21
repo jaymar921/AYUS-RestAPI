@@ -21,5 +21,7 @@ namespace AYUS_RestAPI.ASP.Models
         public DbSet<Session> sessions { get; set; }
         public DbSet<ServiceMapLocationAPI> serviceMaps { get; set; }
         public DbSet<Transaction> transactions { get; set; }
+
+        public DbSet<Logs> logs { get; set; }
     }
 }

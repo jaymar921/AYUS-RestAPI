@@ -609,6 +609,19 @@ namespace AYUS_RestAPI.ASP.Models
             _dbContext.SaveChanges();
         }
 
+        public void AddLog(Logs logs)
+        {
+            _dbContext.logs.Add(logs);
+            _dbContext.SaveChanges();
+        }
+
+        public List<Logs> GetAllLogs(int limit)
+        {
+            if(limit == 0)
+                limit = 9999;
+            return _dbContext.logs.OrderByDescending(l => l.Date).Take(limit).ToList();
+        }
+
         
     }
 }

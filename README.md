@@ -691,3 +691,92 @@ fetch("https://localhost:7172/api/TemporaryRoute/MapLocation", {
 	}
 })
 ```
+
+# File Upload
+### Uploading a file to the server
+```JavaScript
+fetch("https://localhost:7172/api/Upload", {
+	method: "POST", // use 'PUT' method when updating
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX",
+		"Content-Type":"multipart/form-data; boundary=<calculated when request is sent>",
+		"UserID": "XXXXX",// the owner of the file, think of it as the key in a hashmap
+		"Filename":"" // name of the file, for retrieval purpose, think of it as the value in a hashmap
+	}, 
+	body: {
+		"files": FILE // an image file from the form, make sure that it is in png format
+	}
+})
+
+
+// if success, returns
+{
+    "Status": 201,
+    "Message": "Uploaded File"
+}
+```
+
+### Retrieving a file to the server
+```JavaScript
+
+// Long way
+fetch("https://localhost:7172/api/Upload", {
+	method: "GET", // use 'PUT' method when updating
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX",
+		"Content-Type":"multipart/form-data; boundary=<calculated when request is sent>",
+		"UserID": "XXXXX",// the owner of the file, think of it as the key in a hashmap
+		"Filename":"" // name of the file, for retrieval purpose, think of it as the value in a hashmap
+	}
+})
+
+// Short way
+fetch("https://localhost:7172/api/Upload/{UserID}/{Filename}");
+
+// if success, returns
+{
+    "version": "1.1",
+    "content": {
+        "headers": [
+            {
+                "key": "Content-Disposition",
+                "value": [
+                    "attachment; filename=UserID_Filename.png"
+                ]
+            },
+            {
+                "key": "Content-Type",
+                "value": [
+                    "application/octet-stream"
+                ]
+            },
+            {
+                "key": "Content-Length",
+                "value": [
+                    "341892"
+                ]
+            }
+        ]
+    },
+    "statusCode": 200,
+    "reasonPhrase": "OK",
+    "headers": [],
+    "trailingHeaders": [],
+    "requestMessage": null,
+    "isSuccessStatusCode": true
+}
+```
+
+# History
+### Retrieving history
+```JavaScript
+fetch("https://localhost:7172/api/history", {
+	method: 'GET',
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX", // [REQUIRED] 
+		"UserID": "XXXXXX", // [REQUIRED] 
+		"option": ['session', 'transaction', 'billing'], // [REQUIRED] ONLY ONE OPTION, {not array of options}
+		"limit": Number // [REQUIRED] limit the number of items retrieved, 0 means 'all'
+	}
+})
+```

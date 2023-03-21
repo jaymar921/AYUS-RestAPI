@@ -102,6 +102,7 @@ namespace AYUS_RestAPI.ASP.Controllers
                 shop.ShopName = model.ShopName;
                 shop.ShopDescription = model.ShopDescription; 
                 dataRepository.UpdateShop(shop);
+                dataRepository.AddLog(new Data.Logs { Info = $"Updated shop from user '{user.Credential.Username}'" });
                 return Json(new { Status = 200, Message = "Shop data was updated", Shop = new { shop.ShopID, shop.ShopName, shop.ShopDescription } }, options);
             }
 
@@ -157,7 +158,7 @@ namespace AYUS_RestAPI.ASP.Controllers
 
             dataRepository.AddServiceOffer(serviceOffer);
 
-
+            dataRepository.AddLog(new Data.Logs { Info = $"User '{user.Credential.Username}' added a new service offer" });
             return Json(new { Status = 201, Message = "Service was registered, see info for more details", Info=serviceOffer }, options);
         }
 
@@ -262,7 +263,7 @@ namespace AYUS_RestAPI.ASP.Controllers
             if(offer != null)
                 dataRepository.DeleteServiceOffer(offer);
 
-
+            dataRepository.AddLog(new Data.Logs { Info = $"User '{user.Credential.Username}' removed a service offer" });
             return Json(new { Status = 200, Message = $"Removed Service offer successfully", Info = shop.ServiceOffers }, options);
         }
 
@@ -296,7 +297,7 @@ namespace AYUS_RestAPI.ASP.Controllers
                 ServiceRemark = model.ServiceRemark,
             };
             dataRepository.AddBilling(billing);
-
+            dataRepository.AddLog(new Data.Logs { Info = $"A billing was created for shop '{shop.ShopName}'" });
             return Json(new { Status = 201, Message = "Billing was created, see info for details", Info=billing }, options);
         }
 
@@ -360,7 +361,7 @@ namespace AYUS_RestAPI.ASP.Controllers
                 return Json(new { Status = 404, Message = "Billing information not found" }, options);
 
             dataRepository.DeleteBilling(billing);
-
+            dataRepository.AddLog(new Data.Logs { Info = $"A billing was deleted for shop ID '{billing.ShopID}'" });
             return Json(new { Status = 200, Message = "Deleted Billing information, see info for details", Info=billing }, options);
         }
     }

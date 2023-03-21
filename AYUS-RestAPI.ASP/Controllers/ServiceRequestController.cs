@@ -106,7 +106,7 @@ namespace AYUS_RestAPI.ASP.Controllers
             ServiceRequest request = ServiceRequest.parse(model);
                 
             tempDataRepository.GetServiceRequests().Add(request);
-
+            dataRepository.AddLog(new Data.Logs { Info = $"A service request has been created for mechanic '{user.Credential.Username}'" });
             return Json(new
             {
                 Status = 201,
@@ -163,6 +163,7 @@ namespace AYUS_RestAPI.ASP.Controllers
             requestFound.Description = model.Description;
             requestFound.Picture = model.Picture;
 
+            dataRepository.AddLog(new Data.Logs { Info = $"A service request has been updated for user '{user.Credential.Username}'" });
             return Json(new
             {
                 Status = 200,
@@ -195,7 +196,7 @@ namespace AYUS_RestAPI.ASP.Controllers
                 tempDataRepository.GetServiceRequests().Remove(data);
             }
 
-
+            dataRepository.AddLog(new Data.Logs { Info = $"A Service request has been deleted, ID '{serviceRequestUUID}'" });
             return Json(new
             {
                 Status = 200,

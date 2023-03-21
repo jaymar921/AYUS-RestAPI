@@ -42,7 +42,7 @@ namespace AYUS_RestAPI.ASP.Controllers
             };
 
             dataRepository.AddTransaction(transaction);
-
+            dataRepository.AddLog(new Data.Logs { Info = $"Transaction was created for service {model.ServiceName}" });
             return Json(new { Status=201, Message = "Transaction was successfully created", TransactionID = transaction.ID, Info=new { transaction.ServiceName, transaction.ServicePrice, transaction.Remark, transaction.DateOfTransaction} }, options);
         }
 

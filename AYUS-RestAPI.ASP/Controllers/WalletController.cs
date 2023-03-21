@@ -85,7 +85,7 @@ namespace AYUS_RestAPI.ASP.Controllers
 
             user.Wallet.Balance = result;
             dataRepository.UpdateUser(user);
-
+            dataRepository.AddLog(new Data.Logs { Info = $"'{user.Credential.Username}' wallet was updated" });
             return Json(new { Status = 204, Message = $"Wallet of {user.Credential.Username} was successfully updated" }, options);
         }
     }

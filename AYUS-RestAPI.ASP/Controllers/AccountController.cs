@@ -52,6 +52,7 @@ namespace AYUS_RestAPI.ASP.Controllers
                     return Json(new { Status = 401, Message = "Invalid Password, Access Denied" }, options);
                 return Json(new { Status = 404, Message = "Not found" }, options);
             }
+            dataRepository.AddLog(new Data.Logs { Info = $"Account login '{user.Credential.Username}'" });
             return Json(new { Status = 200, Message = "Retrieved Account", AccountData=user.ParseModel() }, options);
         }
 
@@ -80,10 +81,11 @@ namespace AYUS_RestAPI.ASP.Controllers
             var _existing = dataRepository.GetUserByUsername(credential.Username) ?? dataRepository.GetUserByEmail(credential.Email);
             if (_existing != null)
             {
+                dataRepository.AddLog(new Data.Logs { Info = $"Conflict registration to user '{user.Credential.Username}'" });
                 return Json(new { Status = 409, Message = "There is a conflict of data. Data already exist." }, options);
             }
             dataRepository.AddUser(user);
-
+            dataRepository.AddLog(new Data.Logs { Info = $"Account Registration '{user.Credential.Username}'" });
             return Json(new { Status = 201, Message = "Account was successfully registered" }, options);
         }
 
@@ -111,10 +113,11 @@ namespace AYUS_RestAPI.ASP.Controllers
             var _existing = dataRepository.GetUserByUsername(credential.Username) ?? dataRepository.GetUserByEmail(credential.Email) ?? dataRepository.GetUser(personal.UUID);
             if (_existing == null)
             {
+                dataRepository.AddLog(new Data.Logs { Info = $"Trying to find '{credential.Username}'" });
                 return Json(new { Status = 404, Message = "No data found!" }, options);
             }
             dataRepository.UpdateUser(user);
-
+            dataRepository.AddLog(new Data.Logs { Info = $"Updated account '{user.Credential.Username}'" });
             return Json(new { Status = 204, Message = "Account was successfully updated" }, options);
         }
 
@@ -139,7 +142,7 @@ namespace AYUS_RestAPI.ASP.Controllers
             }
 
             dataRepository.DeleteUser(user.PersonalInformation.UUID);
-
+            dataRepository.AddLog(new Data.Logs { Info = $"Deleted account '{user.Credential.Username}'" });
             return Json(new { Status = 200, Message = "Deleted Account, see info for details", Info = user.ParseModel() }, options);
         }
 
@@ -170,7 +173,7 @@ namespace AYUS_RestAPI.ASP.Controllers
             _existing.Credential.Password = newpassword.ToString().HashSHA256();
 
             dataRepository.UpdateUser(_existing);
-
+            dataRepository.AddLog(new Data.Logs { Info = $"Password change for user '{_existing.Credential.Username}'" });
             return Json(new { Status = 204, Message = "Account password was successfully updated" }, options);
         }
 
@@ -204,8 +207,8 @@ namespace AYUS_RestAPI.ASP.Controllers
             }
 
             dataRepository.AddVehicle(model);
-            
 
+            dataRepository.AddLog(new Data.Logs { Info = $"Registered vehicle '{model.PlateNumber}'" });
             return Json(new { Status = 201, Message = "Vehicle was registered successfully", Info=model }, options);
         }
 
@@ -240,7 +243,7 @@ namespace AYUS_RestAPI.ASP.Controllers
 
             dataRepository.UpdateVehicle(model);
 
-
+            dataRepository.AddLog(new Data.Logs { Info = $"Updated vehicle data '{model.PlateNumber}'" });
             return Json(new { Status = 204, Message = "Vehicle was updated successfully", Info=model }, options);
         }
 
@@ -271,7 +274,7 @@ namespace AYUS_RestAPI.ASP.Controllers
 
             dataRepository.DeleteVehicle(vehicle);
 
-
+            dataRepository.AddLog(new Data.Logs { Info = $"Deleted vehicle '{plateNumber}'" });
             return Json(new { Status = 200, Message = $"Vehicle with PlateNumber '{plateNumber}' was deleted successfully" }, options);
         }
 
@@ -302,7 +305,7 @@ namespace AYUS_RestAPI.ASP.Controllers
             List<Vehicle> vehicles = dataRepository.GetVehicle(uuid.ToString());
 
 
-
+            dataRepository.AddLog(new Data.Logs { Info = $"Retrieved list of vehicle from user '{user.Credential.Username}'" });
             return Json(new { Status = 200, Message = $"Retrieved list of vehicle from user {user.Credential.Username}", Vehicles=vehicles.ParseVehicles() }, options);
         }
 
@@ -330,7 +333,6 @@ namespace AYUS_RestAPI.ASP.Controllers
             {
                 return Json(new { Status = 404, Message = $"The user with UUID '{uuid}' does not exist." }, options);
             }
-
             return Json(new { Status = 200, Message = $"Rating found for user '{user.Credential.Username}'", user.AccountStatus.Rating }, options);
         }
 
@@ -363,7 +365,7 @@ namespace AYUS_RestAPI.ASP.Controllers
             dataRepository.UpdateUser(user);
 
 
-
+            dataRepository.AddLog(new Data.Logs { Info = $"Rating for user '{user.Credential.Username}' was updated to '{user.AccountStatus.Rating}' from '{oldRating}'" });
             return Json(new { Status = 200, Message = $"Updated Rating for user '{user.Credential.Username}'", UpdatedRating = user.AccountStatus.Rating, PreviousRating = oldRating }, options);
         }
 
@@ -391,7 +393,7 @@ namespace AYUS_RestAPI.ASP.Controllers
             dataRepository.UpdateUser(user);
 
 
-
+            dataRepository.AddLog(new Data.Logs { Info = $"Updated personal information for user '{user.Credential.Username}'" });
             return Json(new { Status = 200, Message = $"Updated Personal Information for user '{user.Credential.Username}'", UpdatedInformation = user.PersonalInformation, OldInformation = oldInfo }, options);
         }
 
@@ -421,7 +423,7 @@ namespace AYUS_RestAPI.ASP.Controllers
             dataRepository.UpdateUser(user);
 
 
-
+            dataRepository.AddLog(new Data.Logs { Info = $"Updated account status for user'{user.Credential.Username}'" });
             return Json(new { Status = 200, Message = $"Updated Account Status for user '{user.Credential.Username}'", UpdatedInformation = user.AccountStatus, OldInformation = oldAccStatus }, options);
         }
     }
