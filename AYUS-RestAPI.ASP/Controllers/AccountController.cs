@@ -14,9 +14,11 @@ namespace AYUS_RestAPI.ASP.Controllers
     public class AccountController : Controller
     {
         private readonly DataRepository dataRepository;
-        public AccountController(DataRepository data)
+        private readonly TempDataRepository tempDataRepository;
+        public AccountController(DataRepository data, TempDataRepository tempDataRepository)
         {
             dataRepository = data;
+            this.tempDataRepository = tempDataRepository;
         }
 
         
@@ -425,6 +427,75 @@ namespace AYUS_RestAPI.ASP.Controllers
 
             dataRepository.AddLog(new Data.Logs { Info = $"Updated account status for user'{user.Credential.Username}'" });
             return Json(new { Status = 200, Message = $"Updated Account Status for user '{user.Credential.Username}'", UpdatedInformation = user.AccountStatus, OldInformation = oldAccStatus }, options);
+        }
+
+        [Route("Report")]
+        [HttpPost]
+        public JsonResult PostReport(ReportModel model)
+        {
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            var _validation = HeaderValidation.Validate(Request);
+            bool.TryParse((string?)_validation[0], out bool validated);
+            if (!validated)
+                return Json(_validation[1], options);
+
+            User? complainee = dataRepository.GetUser(model.Complainee);
+            User? complainer = dataRepository.GetUser(model.Complainer);
+
+            if (complainee == null)
+            {
+                return Json(new { Status = 404, Message = $"The user with UUID '{model.Complainee}' does not exist." }, options);
+            }
+
+            if (complainer == null)
+            {
+                return Json(new { Status = 404, Message = $"The user with UUID '{model.Complainer}' does not exist." }, options);
+            }
+            ReportModel report = model;
+            tempDataRepository.GetReports().Add(report);
+
+            dataRepository.AddLog(new Data.Logs { Info = $"User {complainer.Credential.Username} has filed a report to {complainee.Credential.Username}" });
+            return Json(new { Status=201, Message="A report was created", Info= $"User {complainer.Credential.Username} has filed a report to {complainee.Credential.Username}. Report ID: {report.getID()}" }, options);
+        }
+
+        [Route("Report")]
+        [HttpGet]
+        public JsonResult GetReport()
+        {
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            var _validation = HeaderValidation.Validate(Request);
+            bool.TryParse((string?)_validation[0], out bool validated);
+            if (!validated)
+                return Json(_validation[1], options);
+
+            return Json(new { Status = 200, Message = "List of reports", Data = tempDataRepository.GetReports().ToList() }, options);
+        }
+
+        [Route("Report/{id:int}")]
+        [HttpDelete]
+        public JsonResult DeleteReport(int id)
+        {
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            var _validation = HeaderValidation.Validate(Request);
+            bool.TryParse((string?)_validation[0], out bool validated);
+            if (!validated)
+                return Json(_validation[1], options);
+
+            ReportModel? model = null;
+            tempDataRepository.GetReports().ForEach(report =>
+            {
+                if (report.getID() == id)
+                {
+                    model = report;
+                } 
+            });
+            
+            if(model == null)
+                return Json(new { Status = 200, Message = "Could not find report" }, options);
+            model.SetStatus("Approved");
+            dataRepository.AddLog(new Data.Logs { Info = $"Report was closed at status '{model.GetStatus()}', Report ID: {model.getID()}" });
+            tempDataRepository.GetReports().Remove(model);
+            return Json(new { Status = 200, Message = "Removed report" }, options);
         }
     }
 }

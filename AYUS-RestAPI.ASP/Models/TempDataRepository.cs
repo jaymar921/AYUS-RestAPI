@@ -10,6 +10,7 @@ namespace AYUS_RestAPI.ASP.Models
         List<ServiceRequest> serviceRequests = new List<ServiceRequest>();
         List<MapLocation> mapLocations = new List<MapLocation>();
         List<SessionFlag> SessionFlags = new List<SessionFlag>();
+        List<ReportModel> reportModels = new List<ReportModel>();
 
         public List<ServiceRequest> GetServiceRequests()
         {
@@ -24,6 +25,11 @@ namespace AYUS_RestAPI.ASP.Models
         public List<SessionFlag> GetSessionFlags() 
         { 
             return SessionFlags;
+        }
+
+        public List<ReportModel> GetReports()
+        {
+            return reportModels;
         }
     }
 }

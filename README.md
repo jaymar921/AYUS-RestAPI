@@ -780,3 +780,39 @@ fetch("https://localhost:7172/api/history", {
 	}
 })
 ```
+
+# Reporting
+### Adding report
+```JavaScript
+fetch("https://localhost:7172/api/Account/Report", {
+	method: 'POST',
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX", // [REQUIRED]
+	},
+	body:{
+		"complainer": "string", // UUID of complainer
+		"complainee": "string", // UUID of complainee
+		"reason": "string"      // reason
+	}
+})
+```
+
+### Getting report
+```JavaScript
+fetch("https://localhost:7172/api/Account/Report", {
+	method: 'GET',
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX", // [REQUIRED]
+	}
+})
+```
+
+### Getting report
+```JavaScript
+fetch("https://localhost:7172/api/Account/Report/{reportID:int}", {
+	method: 'DELETE',
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX", // [REQUIRED]
+	}
+})
+```
