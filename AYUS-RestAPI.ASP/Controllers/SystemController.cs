@@ -198,5 +198,24 @@ namespace AYUS_RestAPI.ASP.Controllers
 
             return Json(new { Status = 200, Message = "Service Price retrieved", tempDataRepository.ServicePrice }, options);
         }
+
+
+        [Route("Logs")]
+        [HttpGet]
+        public JsonResult GetLogs()
+        {
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            if (!Request.Headers.TryGetValue("AYUS-API-KEY", out var apiKey))
+            {
+                return Json(new { Status = 401, Message = "Please specify the API KEY at the header of the request" }, options);
+            }
+
+            if (apiKey != API_KEY)
+            {
+                return Json(new { Status = 401, Message = "Invalid API Key, Access Denied" }, options);
+            }
+
+            return Json(new { Status = 200, Message = "Logs", Data=dataRepository.GetAllLogs(200).OrderByDescending(L=>L.Date).ToList() }, options);
+        }
     }
 }
