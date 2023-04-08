@@ -11,6 +11,7 @@ namespace AYUS_RestAPI.ASP.Models
         List<MapLocation> mapLocations = new List<MapLocation>();
         List<SessionFlag> SessionFlags = new List<SessionFlag>();
         List<ReportModel> reportModels = new List<ReportModel>();
+        public int ServicePrice { get; set; } = 25;
 
         public List<ServiceRequest> GetServiceRequests()
         {

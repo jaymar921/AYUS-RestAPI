@@ -361,6 +361,18 @@ fetch("https://localhost:7172/api/System/ResetDatabase", {
 })
 ```
 
+
+### Get ServicePrice for [BILLING]
+This will be used for your billing pricing
+```JavaScript
+fetch("https://localhost:7172/api/System/ServicePrice", {
+	method: "GET",
+	headers:{
+		"AYUS-API-KEY":"XXXXXXXX"
+	}
+})
+```
+
 # Vehicles
 
 ### POST/PUT -ADDVEHICLE
@@ -807,7 +819,7 @@ fetch("https://localhost:7172/api/Account/Report", {
 })
 ```
 
-### Getting report
+### Deleting report
 ```JavaScript
 fetch("https://localhost:7172/api/Account/Report/{reportID:int}", {
 	method: 'DELETE',
