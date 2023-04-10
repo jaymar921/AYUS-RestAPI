@@ -492,7 +492,7 @@ namespace AYUS_RestAPI.ASP.Controllers
             
             if(model == null)
                 return Json(new { Status = 200, Message = "Could not find report" }, options);
-            model.SetStatus("Approved");
+            model.SetStatus("DONE");
             dataRepository.AddLog(new Data.Logs { Info = $"Report was closed at status '{model.GetStatus()}', Report ID: {model.getID()}" });
             tempDataRepository.GetReports().Remove(model);
             return Json(new { Status = 200, Message = "Removed report" }, options);
