@@ -130,9 +130,10 @@ namespace AYUS_RestAPI.ASP.Models
                         ShopDescription = user.AccountStatus.GetShop().ShopDescription,
                         ShopName = user.AccountStatus.GetShop().ShopName
                     } : null,
-                   IsDeleted = user.AccountStatus.IsDeleted,
-                   IsLocked = user.AccountStatus.IsLocked,
-                   IsOnline = user.AccountStatus.IsOnline,
+                    Rating = user.AccountStatus.Rating,
+                    IsDeleted = user.AccountStatus.IsDeleted,
+                    IsLocked = user.AccountStatus.IsLocked,
+                    IsOnline = user.AccountStatus.IsOnline,
                 }
             };
         }
