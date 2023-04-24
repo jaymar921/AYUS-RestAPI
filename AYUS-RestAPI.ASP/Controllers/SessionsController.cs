@@ -40,7 +40,11 @@ namespace AYUS_RestAPI.ASP.Controllers
             List<MechanicPartial> users = new List<MechanicPartial>();
             var sessionsList = dataRepository.GetAllSessions().ToList();
             dataRepository.GetAllUser()
-                .Where(u => u.AccountStatus.GetRole.Equals(Roles.MECHANIC)).ToList()
+                .Where(u => 
+                     u.AccountStatus.GetRole.Equals(Roles.MECHANIC) &&
+                    !u.AccountStatus.IsLocked && 
+                    !u.AccountStatus.IsDeleted && 
+                     u.AccountStatus.IsOnline).ToList()
                 .ForEach(u => {
                     bool found = false;
                     sessionsList.ForEach(session =>

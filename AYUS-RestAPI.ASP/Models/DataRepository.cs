@@ -89,6 +89,9 @@ namespace AYUS_RestAPI.ASP.Models
             {
                 accountStatus.Role = user.AccountStatus.Role;
                 accountStatus.Rating = user.AccountStatus.Rating;
+                accountStatus.IsOnline = user.AccountStatus.IsOnline;
+                accountStatus.IsDeleted = user.AccountStatus.IsDeleted;
+                accountStatus.IsLocked = user.AccountStatus.IsLocked;
                 _dbContext.SaveChanges();
             }
             /*
