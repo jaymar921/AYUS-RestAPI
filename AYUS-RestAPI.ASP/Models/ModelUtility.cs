@@ -90,7 +90,11 @@ namespace AYUS_RestAPI.ASP.Models
                         ShopID = user.AccountStatus.GetShop().ShopID,
                         ShopDescription = user.AccountStatus.GetShop().ShopDescription,
                         ShopName = user.AccountStatus.GetShop().ShopName
-                    } : null
+                    } : null,
+                    IsDeleted = user.AccountStatus.IsDeleted,
+                    IsLocked = user.AccountStatus.IsLocked,
+                    IsOnline = user.AccountStatus.IsOnline,
+                    Rating = user.AccountStatus.Rating,
                 }
             };
         }
