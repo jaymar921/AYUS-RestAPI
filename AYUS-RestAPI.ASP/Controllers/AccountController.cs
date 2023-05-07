@@ -419,9 +419,9 @@ namespace AYUS_RestAPI.ASP.Controllers
             }
 
             AccountStatus oldAccStatus = (AccountStatus)user.AccountStatus.Clone();
-            user.AccountStatus.IsOnline = accountStatus.IsOnline;
-            user.AccountStatus.IsLocked = accountStatus.IsLocked;
-            user.AccountStatus.IsDeleted = accountStatus.IsDeleted;
+            user.AccountStatus.IsOnline = accountStatus.IsOnline??user.AccountStatus.IsOnline;
+            user.AccountStatus.IsLocked = accountStatus.IsLocked ?? user.AccountStatus.IsLocked;
+            user.AccountStatus.IsDeleted = accountStatus.IsDeleted ?? user.AccountStatus.IsDeleted;
             dataRepository.UpdateUser(user);
 
 
